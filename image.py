@@ -8,11 +8,9 @@ def find(query, universe):
     image = cv2.imread(universe)
     template = cv2.imread(query)
     result = cv2.matchTemplate(image, template, cv2.TM_CCOEFF_NORMED)
-    match_indices = np.arange(result.size)[(result > 0.9).flatten()]
-    # return np.unravel_index(match_indices, result.shape)
     y, x = np.unravel_index(result.argmax(), result.shape)
     _, img_y = size(universe)
-    return [(x, img_y - y)]
+    return x, img_y - y
 
 
 def size(img_path):
