@@ -24,3 +24,4 @@ def pdf2img(input_path, output_path):
 
     for page in pages:
         page.save(output_path, 'JPEG')
+        break

@@ -28,17 +28,20 @@ def crop(input_path, output_path, lower=None, upper=None, pages=None):
         # for i in range(numPages):
         #     if i in excluded:
         #         pass
+        pdf_output = PdfFileWriter()
         if pages is None:
             pages = range(num_pages)
         for i in pages:
             page = pdf_reader.getPage(i)
-            crop_page(page, output_path, lower, upper)
+            mod_page(page, lower, upper)
+            pdf_output.addPage(page)
+        with open(output_path, "wb") as output_file:
+            pdf_output.write(output_file)
 
 
 def crop_page(page, output_path, lower=None, upper=None):
     pdf_output = PdfFileWriter()
     page = mod_page(page, lower, upper)
-    pdf_output.addPage(page)
 
     with open(output_path, "wb") as output_file:
         pdf_output.write(output_file)
