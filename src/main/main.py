@@ -43,10 +43,14 @@ with open(data_folder + "/left.pdf") as l:
             output.write(f)
 print "ENEM borders cut out"
 
-find(data_folder + "/final.pdf",
+qs = find(data_folder + "/final.pdf",
                     data_folder + "/others.pdf",
                     data_folder,
                     res_folder + "/question_pattern.png")
+i = 0
+for q in qs:
+    i += 1
+    q.save_as_pdf(enem_path, str(i) + ".pdf")
 
 # q = PDFQuestion(lower, upper, page_index)
 #

@@ -2,11 +2,12 @@ import os
 from pyPdf import PdfFileWriter, PdfFileReader
 import pdf
 import image
+from Question import PDFQuestion
 
 drop = 100
 
 
-def find(pdf_input_path, others_path,
+def find(pdf_input_path, pdf_page_path,
          working_dir, pattern_path):
 
     iteration = 0
@@ -16,75 +17,65 @@ def find(pdf_input_path, others_path,
     if not os.path.exists(working_dir):
         os.mkdir(working_dir, 0755)
     img_path = working_dir + filename + ".jpg"
-    cropped_pdf_path = working_dir + filename + "-cropped.pdf"
+    ot_path = working_dir + filename + "-initial.pdf"
 
-    image.pdf2img(pdf_input_path, img_path)
+    questions = []
+    question = PDFQuestion()
 
-    _, pattern_occurrence_y = image.find(pattern_path, img_path)
-    _, img_height = image.size(img_path)
-    fraction = float(pattern_occurrence_y) / img_height
+    i = 0
 
-    with open(pdf_input_path, 'rb') as question_pdf_file:
-        question_pdf = PdfFileReader(question_pdf_file)
+    pdf.crop(pdf_input_path, pdf_page_path)
+    while i < 6:
+        i += 1
+        while True:
+            image.pdf2img(pdf_page_path, img_path)
+            _, pattern_occurrence_y = image.find(pattern_path, img_path)
+            _, img_height = image.size(img_path)
+            if pattern_occurrence_y is not None:
+                break
+            else:
+                # this question will be lost
+                question = PDFQuestion()
+                page_number += 1
+        #         Grab next page
+                with open(pdf_input_path) as question_pdf_file:
+                    enem_pdf = PdfFileReader(question_pdf_file)
+                    with open(pdf_page_path, "wb") as page_file:
+                        output = PdfFileWriter()
+                        page = enem_pdf.getPage(page_number)
+                        output.addPage(page)
+                        output.write(page_file)
+        with open(pdf_page_path) as page_file:
+            page_pdf = PdfFileReader(page_file)
+            page = page_pdf.getPage(0)
+            lower, upper = get_coordinates(page,
+                                           img_height,
+                                           pattern_occurrence_y)
+            question.upper = upper[0], lower[1]
 
-        page = question_pdf.getPage(page_number)
-        lower, _ = get_coordinates(page, img_height, pattern_occurrence_y)
-        pdf.mod_page(page, lower=lower)
-        output = PdfFileWriter()
-        output.addPage(page)
+            question = PDFQuestion()
+            # We only append here because we dont want do add the first one
+            questions.append(question)
+            question.page = 1
+            question.lower = lower
+            question.upper = page.mediaBox.getUpperRight_x(),\
+                             page.mediaBox.getUpperRight_y()
 
-        with open(others_path, "wb") as out_f:
-            output.write(out_f)
+            c_lower = lower[0], lower[1] - drop
+            pdf.mod_page(page, lower=c_lower)
+            output = PdfFileWriter()
+            output.addPage(page)
 
+            with open(ot_path, "wb") as ot_file:
+                output.write(ot_file)
+                aux = pdf_page_path
+                pdf_page_path = ot_path
+                ot_path = aux
 
+    return questions[:-1]
 
-
-
-
-
-
-
-
-#     # Crops below pattern
-#     crop(pdf_input_path, cropped_pdf_path, page_number)
-#
-#     pdf_img_reference = cropped_pdf_path
-#
-#     # Image Created
-#     image.pdf2img(pdf_img_reference, img_path)
-#
-#     _, pattern_occurrence_y = image.find(pattern_path, img_path)
-#     _, img_height = image.size(img_path)
-#
-#     with open(pdf_img_reference, 'rb') as question_pdf_file:
-#         question_pdf = PdfFileReader(question_pdf_file)
-#
-#         page = question_pdf.getPage(page_number)
-#         lower, upper = get_coordinates(page, img_height, pattern_occurrence_y)
-#         pdf.mod_page(page, lower=lower, upper=upper)
-#         output = PdfFileWriter()
-#         output.addPage(page)
-#
-#         with open(others_path, "wb") as out_f:
-#             output.write(out_f)
-#
-#     with open(pdf_img_reference, 'rb') as question_pdf_file:
-#         question_pdf = PdfFileReader(question_pdf_file)
-#
-#         page = question_pdf.getPage(page_number)
-#         pdf_height = page.mediaBox.getLowerLeft_y() - page.mediaBox.getUpperRight_y()
-#         distance_point_y = int((pdf_height * pattern_occurrence_y) / img_height)
-#         upper = (page.mediaBox.getUpperRight_x(),
-#                  page.mediaBox.getUpperRight_y() + distance_point_y + 2)
-#         lower = (page.mediaBox.getLowerLeft_x(),
-#                  # We add 16 so we can crop out "Questao X"
-#                  page.mediaBox.getLowerLeft_y() + drop)
-#
-#         return lower, upper
-#
-#
 def get_coordinates(page, img_height, point_y):
-    pdf_height = 675
+    pdf_height = page.mediaBox.getLowerLeft_y() - page.mediaBox.getUpperRight_y()
 
     pattern_pdf_y = int((pdf_height * point_y) / img_height)
 
@@ -94,14 +85,10 @@ def get_coordinates(page, img_height, point_y):
     return pattern_lower_coordinates, pattern_upper_coordinates
 
 
-
-
-
-#
-# def crop(input_path, output_path, page_number):
-#     with open(input_path, "rb") as pdf_file:
-#         pdf_input = PdfFileReader(pdf_file)
-#         page = pdf_input.getPage(page_number)
-#         pdf.crop(input_path, output_path,
-#                  lower=(page.mediaBox.getLowerLeft_x(),
-#                         page.mediaBox.getLowerLeft_y() - drop))
+def crop(input_path, output_path, page_number):
+    with open(input_path, "rb") as pdf_file:
+        pdf_input = PdfFileReader(pdf_file)
+        page = pdf_input.getPage(page_number)
+        pdf.crop(input_path, output_path,
+                 lower=(page.mediaBox.getLowerLeft_x(),
+                        page.mediaBox.getLowerLeft_y() - drop))

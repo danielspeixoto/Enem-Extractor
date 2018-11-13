@@ -7,10 +7,15 @@ from pdf2image import convert_from_path
 def find(query, universe):
     image = cv2.imread(universe)
     template = cv2.imread(query)
-    result = cv2.matchTemplate(image, template, cv2.TM_CCOEFF_NORMED)
-    y, x = np.unravel_index(result.argmax(), result.shape)
-    _, img_y = size(universe)
-    return x, img_y - y
+    res = cv2.matchTemplate(image, template, cv2.TM_CCOEFF_NORMED)
+    argmax = res.argmax()
+    shape = res.shape
+    x = y = None
+    if argmax > 750000:
+        y, x = np.unravel_index(res.argmax(), res.shape)
+        _, img_y = size(universe)
+        y = img_y - y
+    return x, y
 
 
 def size(img_path):

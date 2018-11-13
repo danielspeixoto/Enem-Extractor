@@ -5,10 +5,10 @@ import pdf
 
 class PDFQuestion:
 
-    def __init__(self, lower, upper, page):
-        self.lower = lower
-        self.upper = upper
-        self.page = page
+    def __init__(self):
+        self.lower = None
+        self.upper = None
+        self.page = None
 
     def save_as_pdf(self, pdf_input_path, output_path):
         with open(pdf_input_path, "rb") as pdf_file:
