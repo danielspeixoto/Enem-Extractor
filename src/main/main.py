@@ -11,15 +11,15 @@ data_folder = "/home/daniel/PycharmProjects/enem-parser/data/"
 enem_path = "/home/daniel/Documents/enem/2017-1.pdf"
 question_folder = "/home/daniel/PycharmProjects/enem-parser/questions/"
 
-page_index = 1
+page_index = [1,2,3,4,5,6]
 
 pdf.crop(enem_path,
          data_folder + "left.pdf",
-         (310, 730), (55, 60), pages=[page_index])
+         (310, 730), (55, 60), pages=page_index)
 
 pdf.crop(enem_path,
          data_folder + "right.pdf",
-         (570, 735), (315, 60), pages=[page_index])
+         (570, 735), (315, 60), pages=page_index)
 
 with open(data_folder + "/left.pdf") as l:
     left_pdf = PdfFileReader(l)
@@ -50,7 +50,7 @@ qs = find(data_folder + "/final.pdf",
 i = 0
 for q in qs:
     i += 1
-    q.save_as_pdf(enem_path, str(i) + ".pdf")
+    q.save_as_pdf(data_folder + "final.pdf", question_folder + str(i) + ".pdf")
 
 # q = PDFQuestion(lower, upper, page_index)
 #

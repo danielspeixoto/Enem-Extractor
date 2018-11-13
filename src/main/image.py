@@ -8,11 +8,10 @@ def find(query, universe):
     image = cv2.imread(universe)
     template = cv2.imread(query)
     res = cv2.matchTemplate(image, template, cv2.TM_CCOEFF_NORMED)
-    argmax = res.argmax()
-    shape = res.shape
     x = y = None
-    if argmax > 750000:
-        y, x = np.unravel_index(res.argmax(), res.shape)
+    _, confidence, _, coordinates = cv2.minMaxLoc(res)
+    if confidence > 0.7:
+        x, y = coordinates
         _, img_y = size(universe)
         y = img_y - y
     return x, y

@@ -25,7 +25,7 @@ def find(pdf_input_path, pdf_page_path,
     i = 0
 
     pdf.crop(pdf_input_path, pdf_page_path)
-    while i < 6:
+    while True:
         i += 1
         while True:
             image.pdf2img(pdf_page_path, img_path)
@@ -37,15 +37,17 @@ def find(pdf_input_path, pdf_page_path,
                 # this question will be lost
                 question = PDFQuestion()
                 page_number += 1
-        #         Grab next page
                 with open(pdf_input_path) as question_pdf_file:
                     enem_pdf = PdfFileReader(question_pdf_file)
+                    if not page_number < enem_pdf.numPages:
+                        return questions
                     with open(pdf_page_path, "wb") as page_file:
                         output = PdfFileWriter()
                         page = enem_pdf.getPage(page_number)
                         output.addPage(page)
                         output.write(page_file)
         with open(pdf_page_path) as page_file:
+            print("Question " + str(i) + " at page " + str(page_number))
             page_pdf = PdfFileReader(page_file)
             page = page_pdf.getPage(0)
             lower, upper = get_coordinates(page,
@@ -56,7 +58,7 @@ def find(pdf_input_path, pdf_page_path,
             question = PDFQuestion()
             # We only append here because we dont want do add the first one
             questions.append(question)
-            question.page = 1
+            question.page = page_number
             question.lower = lower
             question.upper = page.mediaBox.getUpperRight_x(),\
                              page.mediaBox.getUpperRight_y()
@@ -72,7 +74,6 @@ def find(pdf_input_path, pdf_page_path,
                 pdf_page_path = ot_path
                 ot_path = aux
 
-    return questions[:-1]
 
 def get_coordinates(page, img_height, point_y):
     pdf_height = page.mediaBox.getLowerLeft_y() - page.mediaBox.getUpperRight_y()
