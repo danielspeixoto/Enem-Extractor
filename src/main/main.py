@@ -4,14 +4,14 @@ import pdf
 
 from PDFCrop import find
 
-from Question import PDFQuestion
+from PDFParts import PDFPortion
 
 res_folder = "/home/daniel/PycharmProjects/enem-parser/res/"
 data_folder = "/home/daniel/PycharmProjects/enem-parser/data/"
 enem_path = "/home/daniel/Documents/enem/2017-1.pdf"
 question_folder = "/home/daniel/PycharmProjects/enem-parser/questions/"
 
-page_index = [1,2,3,4,5,6]
+page_index = [1, 2, 3]
 
 pdf.crop(enem_path,
          data_folder + "left.pdf",

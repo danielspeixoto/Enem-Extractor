@@ -3,7 +3,7 @@ from pyPdf import PdfFileReader, PdfFileWriter
 import pdf
 
 
-class PDFQuestion:
+class PDFPortion:
 
     def __init__(self):
         self.lower = None
