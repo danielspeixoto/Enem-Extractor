@@ -44,7 +44,6 @@ with open(data_folder + "/left.pdf") as l:
 print "ENEM borders cut out"
 
 qs = find(data_folder + "/final.pdf",
-                    data_folder + "/others.pdf",
                     data_folder,
                     res_folder + "/question_pattern.png")
 i = 0
