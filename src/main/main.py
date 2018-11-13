@@ -11,11 +11,11 @@ data_folder = "/home/daniel/PycharmProjects/enem-parser/data/"
 enem_path = "/home/daniel/Documents/enem/2017-1.pdf"
 question_folder = "/home/daniel/PycharmProjects/enem-parser/questions/"
 
-page_index = [1, 2, 3]
+page_index = [19]
 
 pdf.crop(enem_path,
          data_folder + "left.pdf",
-         (310, 730), (55, 60), pages=page_index)
+         (310, 735), (55, 60), pages=page_index)
 
 pdf.crop(enem_path,
          data_folder + "right.pdf",
@@ -45,11 +45,12 @@ print "ENEM borders cut out"
 
 qs = find(data_folder + "/final.pdf",
                     data_folder,
-                    res_folder + "/question_pattern.png")
+                    res_folder + "/question_pattern.png",
+                    res_folder + "/end_pattern.png")
 i = 0
 for q in qs:
     i += 1
-    q.save_as_pdf(data_folder + "final.pdf", question_folder + str(i) + ".pdf")
+    q.save_as_pdf(data_folder + "final.pdf", question_folder + str(i))
 
 # q = PDFQuestion(lower, upper, page_index)
 #

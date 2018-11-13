@@ -3,8 +3,10 @@ from pyPdf import PdfFileWriter, PdfFileReader
 import pdf
 import image
 from PDFParts import PDFPortion
+from Question import Question
 
-def find(pdf_input_path, working_dir, pattern_path):
+
+def find(pdf_input_path, working_dir, pattern_path, end_pattern_path):
     filename = "enem"
     img_path = working_dir + filename + ".jpg"
 
@@ -21,6 +23,8 @@ def find(pdf_input_path, working_dir, pattern_path):
     with open(pdf_input_path) as question_pdf_file:
         enem_pdf = PdfFileReader(question_pdf_file)
         num_of_pages = enem_pdf.numPages
+        first_page = enem_pdf.getPage(0)
+        pdf_height = first_page.mediaBox.getLowerLeft_y() - first_page.mediaBox.getUpperRight_y()
 
     for page_number in range(num_of_pages):
         print("Page " + str(page_number))
@@ -30,18 +34,32 @@ def find(pdf_input_path, working_dir, pattern_path):
                                        img_path,
                                        pattern_path)
         pdf_portion = PDFPortion()
+        pdf_portion.page = page_number
+        is_page_start = True
         while coordinates is not None:
             lower, upper = coordinates
-            question_number += 1
-            print("|---- Question " + str(question_number))
             # A question end is where a separator is found
             pdf_portion.upper = upper[0], lower[1]
 
+            # If last portion was part of a already existing question
+            # adds it to last inserted question
+            if is_page_start:
+                # It is allowed 30 units of distance from start
+                # to not be considered another question
+                # This is also used to skip section start statements
+                # Ex.: Mathematics and Physics questions from x to y...
+                if lower[1] < pdf_height - 30:
+                    print("|---- Question " + str(question_number) + ".2")
+                    questions[-1].add_part(pdf_portion)
+
+            question_number += 1
+            print("|---- Question " + str(question_number) + ".1")
+            question = Question()
             pdf_portion = PDFPortion()
-            # We only append here because we don't want do add the first one
-            questions.append(pdf_portion)
-            # Another question start is where a separator is found
             pdf_portion.page = page_number
+            question.add_part(pdf_portion)
+            questions.append(question)
+            # Another question start is where a separator is found
             pdf_portion.lower = lower
             with open(current_pdf_path) as page_file:
                 page_pdf = PdfFileReader(page_file)
@@ -62,6 +80,7 @@ def find(pdf_input_path, working_dir, pattern_path):
             coordinates = _get_coordinates(current_pdf_path,
                                            img_path,
                                            pattern_path)
+            is_page_start = False
     return questions
 
 
