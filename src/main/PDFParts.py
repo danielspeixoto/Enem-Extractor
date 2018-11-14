@@ -1,6 +1,6 @@
 from pyPdf import PdfFileReader, PdfFileWriter
 
-import pdf
+import pdf_utils
 
 
 class PDFPortion:
@@ -16,7 +16,7 @@ class PDFPortion:
             output = PdfFileWriter()
 
             page = pdf_input.getPage(self.page)
-            page = pdf.mod_page(page, lower=self.lower, upper=self.upper)
+            page = pdf_utils.mod_page(page, lower=self.lower, upper=self.upper)
             output.addPage(page)
 
             with open(output_path, "wb") as out_f:

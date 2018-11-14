@@ -1,4 +1,3 @@
-from PIL import Image
 import cv2
 import numpy as np
 from pdf2image import convert_from_path

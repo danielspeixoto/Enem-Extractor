@@ -1,12 +1,12 @@
 import os
 from pyPdf import PdfFileWriter, PdfFileReader
-import pdf
+import pdf_utils
 import image
 from PDFParts import PDFPortion
 from Question import Question
 
 
-def find(pdf_input_path, working_dir, pattern_path, end_pattern_path):
+def split_in_questions(pdf_input_path, working_dir, pattern_path):
     filename = "enem"
     img_path = working_dir + filename + ".jpg"
 
@@ -18,7 +18,7 @@ def find(pdf_input_path, working_dir, pattern_path, end_pattern_path):
     question_number = 0
 
     # Copies original PDF
-    pdf.crop(pdf_input_path, current_pdf_path)
+    pdf_utils.crop(pdf_input_path, current_pdf_path)
 
     with open(pdf_input_path) as question_pdf_file:
         enem_pdf = PdfFileReader(question_pdf_file)
@@ -28,7 +28,7 @@ def find(pdf_input_path, working_dir, pattern_path, end_pattern_path):
 
     for page_number in range(num_of_pages):
         print("Page " + str(page_number))
-        _copy_page(pdf_input_path, current_pdf_path, page_number)
+        pdf_utils.save_page(pdf_input_path, current_pdf_path, page_number)
 
         coordinates = _get_coordinates(current_pdf_path,
                                        img_path,
@@ -70,7 +70,7 @@ def find(pdf_input_path, working_dir, pattern_path, end_pattern_path):
 
                 # Crops below pattern
                 aux_lower = lower[0], lower[1] - 100
-                pdf.mod_page(page, lower=aux_lower)
+                pdf_utils.mod_page(page, lower=aux_lower)
                 output = PdfFileWriter()
                 output.addPage(page)
                 with open(aux_pdf_path, "wb") as aux_pdf_file:
@@ -103,12 +103,3 @@ def _get_coordinates(pdf_page_path, img_path, pattern_path):
                                  page.mediaBox.getUpperRight_y() + pattern_pdf_y)
     pattern_upper_coordinates = page.mediaBox.upperRight
     return pattern_lower_coordinates, pattern_upper_coordinates
-
-def _copy_page(pdf_input_path, pdf_output, page_number):
-    with open(pdf_input_path) as question_pdf_file:
-        enem_pdf = PdfFileReader(question_pdf_file)
-        page = enem_pdf.getPage(page_number)
-        with open(pdf_output, "wb") as page_file:
-            output = PdfFileWriter()
-            output.addPage(page)
-            output.write(page_file)
