@@ -1,8 +1,8 @@
 import os
 from pyPdf import PdfFileWriter, PdfFileReader
-import vision.pdf_utils
-import vision.image
-from model.PDFItem import Portion, Question
+import util.vision.pdf_utils
+import util.vision.image
+from data.model.pdf_item import Portion, Question
 
 
 def split_in_questions(pdf_input_path, working_dir, pattern_path):
@@ -17,7 +17,7 @@ def split_in_questions(pdf_input_path, working_dir, pattern_path):
     question_number = 0
 
     # Copies original PDF
-    vision.pdf_utils.crop(pdf_input_path, current_pdf_path)
+    util.vision.pdf_utils.crop(pdf_input_path, current_pdf_path)
 
     with open(pdf_input_path) as question_pdf_file:
         enem_pdf = PdfFileReader(question_pdf_file)
@@ -27,7 +27,7 @@ def split_in_questions(pdf_input_path, working_dir, pattern_path):
 
     for page_number in range(num_of_pages):
         print("Page " + str(page_number))
-        vision.pdf_utils.save_page(pdf_input_path, current_pdf_path, page_number)
+        util.vision.pdf_utils.save_page(pdf_input_path, current_pdf_path, page_number)
 
         coordinates = _get_coordinates(current_pdf_path,
                                        img_path,
@@ -54,6 +54,7 @@ def split_in_questions(pdf_input_path, working_dir, pattern_path):
             question_number += 1
             print("|---- Question " + str(question_number) + ".1")
             question = Question()
+            question.number = question_number
             pdf_portion = Portion()
             pdf_portion.page = page_number
             question.add_part(pdf_portion)
@@ -69,7 +70,7 @@ def split_in_questions(pdf_input_path, working_dir, pattern_path):
 
                 # Crops below pattern
                 aux_lower = lower[0], lower[1] - 100
-                vision.pdf_utils.mod_page(page, lower=aux_lower)
+                util.vision.pdf_utils.mod_page(page, lower=aux_lower)
                 output = PdfFileWriter()
                 output.addPage(page)
                 with open(aux_pdf_path, "wb") as aux_pdf_file:
@@ -87,8 +88,8 @@ def split_in_questions(pdf_input_path, working_dir, pattern_path):
 
 
 def _get_coordinates(pdf_page_path, img_path, pattern_path):
-    vision.image.pdf2img(pdf_page_path, img_path)
-    _, pattern_occurrence_y = vision.image.find(pattern_path, img_path)
+    util.vision.image.pdf2img(pdf_page_path, img_path)
+    _, pattern_occurrence_y = util.vision.image.find(pattern_path, img_path)
     if pattern_occurrence_y is None:
         return None
 
@@ -97,7 +98,7 @@ def _get_coordinates(pdf_page_path, img_path, pattern_path):
         page = page_pdf.getPage(0)
         pdf_height = page.mediaBox.getLowerLeft_y() - page.mediaBox.getUpperRight_y()
 
-    _, img_height = vision.image.size(img_path)
+    _, img_height = util.vision.image.size(img_path)
     # Returns the equivalent point at the specified PDF
     pattern_pdf_y = int((pdf_height * pattern_occurrence_y) / img_height)
 
@@ -106,8 +107,3 @@ def _get_coordinates(pdf_page_path, img_path, pattern_path):
     pattern_upper_coordinates = page.mediaBox.upperRight
     return pattern_lower_coordinates, pattern_upper_coordinates
 
-def save_questions_pdf(questions, input_path, question_folder):
-    i = 0
-    for question in questions:
-        i += 1
-        question.save_as_pdf(input_path, question_folder + str(i))

@@ -1,4 +1,4 @@
-class Validation:
+class Validator:
 
     def __init__(self, amount_of_questions):
         self.amount_of_questions = amount_of_questions
