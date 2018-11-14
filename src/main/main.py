@@ -1,6 +1,6 @@
-from PDFCrop import split_in_questions, save_questions_pdf
-from PreProcessing import PreProcessing
-from Validation import Validation
+from stages.splitter import split_in_questions, save_questions_pdf
+from stages.PreProcessing import PreProcessing
+from stages.Validation import Validation
 
 # Env Variable
 enem_path = "/home/daniel/Documents/enem/2017-1.pdf"

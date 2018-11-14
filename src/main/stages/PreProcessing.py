@@ -1,7 +1,7 @@
 import os
 
 from pyPdf import PdfFileReader, PdfFileWriter
-import pdf_utils
+import vision.pdf_utils
 
 
 class PreProcessing:
@@ -29,19 +29,19 @@ class PreProcessing:
             pdf_file = PdfFileReader(input_pdf)
             all_pages = range(pdf_file.numPages)
 
-        pdf_utils.crop(self.input_path,
-                       self.left_column_pdf,
-                       (310, 735), (55, 60),
-                       excluded=self.excluded_pages + self.one_column_pages)
+        vision.pdf_utils.crop(self.input_path,
+                                       self.left_column_pdf,
+                                       (310, 735), (55, 60),
+                                       excluded=self.excluded_pages + self.one_column_pages)
 
-        pdf_utils.crop(self.input_path,
-                       self.right_column_pdf,
-                       (570, 735), (315, 60),
-                       excluded=self.excluded_pages + self.one_column_pages)
+        vision.pdf_utils.crop(self.input_path,
+                                       self.right_column_pdf,
+                                       (570, 735), (315, 60),
+                                       excluded=self.excluded_pages + self.one_column_pages)
 
-        pdf_utils.crop(self.input_path,
-                       self.one_column_pdf,
-                       (570, 735), (55, 60), pages=self.one_column_pages)
+        vision.pdf_utils.crop(self.input_path,
+                                       self.one_column_pdf,
+                                       (570, 735), (55, 60), pages=self.one_column_pages)
 
         one_column_pages = 0
         two_column_pages = 0

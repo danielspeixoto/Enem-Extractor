@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 import json
 import re
-import os
-import sys
 
-from google.cloud import vision
 from google.cloud import storage
+from google.cloud import vision
 from google.protobuf import json_format
 
 
