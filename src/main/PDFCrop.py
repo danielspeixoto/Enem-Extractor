@@ -81,6 +81,9 @@ def split_in_questions(pdf_input_path, working_dir, pattern_path):
                                            img_path,
                                            pattern_path)
             is_page_start = False
+    os.remove(aux_pdf_path)
+    os.remove(current_pdf_path)
+    os.remove(img_path)
     return questions
 
 
@@ -103,3 +106,9 @@ def _get_coordinates(pdf_page_path, img_path, pattern_path):
                                  page.mediaBox.getUpperRight_y() + pattern_pdf_y)
     pattern_upper_coordinates = page.mediaBox.upperRight
     return pattern_lower_coordinates, pattern_upper_coordinates
+
+def save_questions_pdf(questions, input_path, question_folder):
+    i = 0
+    for question in questions:
+        i += 1
+        question.save_as_pdf(input_path, question_folder + str(i))

@@ -63,7 +63,6 @@ class PreProcessing:
 
         with open(self.working_pdf, "wb") as working_file:
             output.write(working_file)
-        print "ENEM is linear"
         os.remove(self.left_column_pdf)
         os.remove(self.right_column_pdf)
         os.remove(self.one_column_pdf)
