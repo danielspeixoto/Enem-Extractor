@@ -31,17 +31,17 @@ class PreProcessor:
 
         util.vision.pdf_utils.crop(self.input_path,
                                    self.left_column_pdf,
-                                   (310, 735), (55, 60),
+                                   (55, 60), (310, 735),
                                    excluded=self.excluded_pages + self.one_column_pages)
 
         util.vision.pdf_utils.crop(self.input_path,
                                    self.right_column_pdf,
-                                   (570, 735), (315, 60),
+                                   (315, 60), (570, 735),
                                    excluded=self.excluded_pages + self.one_column_pages)
 
         util.vision.pdf_utils.crop(self.input_path,
                                    self.one_column_pdf,
-                                   (570, 735), (55, 60), pages=self.one_column_pages)
+                                   (55, 60), (570, 735), pages=self.one_column_pages)
 
         one_column_pages = 0
         two_column_pages = 0

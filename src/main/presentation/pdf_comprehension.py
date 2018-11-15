@@ -6,7 +6,7 @@ def start(config):
     questions = config.repo.all()
 
     print("Filtering questions that we are able to process")
-    questions, _ = filtering.pdf_questions(questions)
+    questions, _ = filtering.pdf_questions(questions, config.working_pdf, config.working_dir + "/filtering/")
 
     # print("Uploading questions to Bucket")
     # print("Performing OCR")

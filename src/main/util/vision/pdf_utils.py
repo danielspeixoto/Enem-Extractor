@@ -57,3 +57,13 @@ def copy_page(pdf_input_path, pdf_output, page_number):
             output = PdfFileWriter()
             output.addPage(page)
             output.write(page_file)
+
+def mod_save_page(pdf_input_path, pdf_output, page_number, lower=None, upper=None):
+    with open(pdf_input_path) as question_pdf_file:
+        enem_pdf = PdfFileReader(question_pdf_file)
+        page = enem_pdf.getPage(page_number)
+        mod_page(page, lower, upper)
+        with open(pdf_output, "wb") as page_file:
+            output = PdfFileWriter()
+            output.addPage(page)
+            output.write(page_file)
