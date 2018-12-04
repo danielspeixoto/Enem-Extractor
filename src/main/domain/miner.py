@@ -13,16 +13,16 @@ from pyPdf import PdfFileReader
 
 from util.vision import image, pdf_utils
 
-enem_path = "/home/daniel/Documents/enem/2017-1.pdf"
+enem_path = "/home/daniel/Documents/enem/a.pdf"
 output_path = "/home/daniel/PycharmProjects/enem-parser/data/contoured.jpg"
 
 img_path = "/home/daniel/PycharmProjects/enem-parser/data/out.jpg"
 
 file = "/home/daniel/PycharmProjects/enem-parser/data/working.pdf"
-file = "/home/daniel/PycharmProjects/enem-parser/data/filtering/16.pdf"
+file = enem_path
 helper = "/home/daniel/PycharmProjects/enem-parser/data/helper.pdf"
 
-pdf_utils.copy_page(file, helper, 0)
+pdf_utils.copy_page(file, helper, 25)
 
 image.pdf2img(helper, img_path)
 
@@ -47,21 +47,48 @@ def parse_obj(lt_objs, mediabox):
         # if lower[0] <= obj.bbox[0] + lower[0] <= upper[0] and lower[0] <= obj.bbox[2] + lower[0] <= upper[0] and lower[1] <= obj.bbox[1] + lower[1] <= \
         #         upper[1] and lower[1] <= obj.bbox[3] + lower[1] <= upper[1]:
             ww = 50
-            color = (255, 0, 0)
-            if isinstance(obj, pdfminer.layout.LTImage):
-                y = int(convert_y(obj.bbox[1], hei))
-                x = int(convert(obj.bbox[0], hei))
-                w = int(convert(obj.width, hei))
-                h = int(convert(obj.height, hei))
-                # if w > 100 and h > 300 and y < 5000:
-                cv2.rectangle(m_image, (x, y), (x + w, y - h), color, ww)
-            elif isinstance(obj, pdfminer.layout.LTCurve):
+            if False:
+                pass
+            # elif isinstance(obj, pdfminer.layout.LTImage):
+            #     color = (255, 0, 0)
+            #     y = int(convert_y(obj.bbox[1], hei))
+            #     x = int(convert(obj.bbox[0], hei))
+            #     w = int(convert(obj.width, hei))
+            #     h = int(convert(obj.height, hei))
+            #     # if w > 100 and h > 300 and y < 5000:
+            #     cv2.rectangle(m_image, (x, y), (x + w, y - h), color, ww)
+            elif isinstance(obj, pdfminer.layout.LTFigure):
+                color = (0, 0, 255)
                 y = int(convert_y(obj.bbox[1], hei)) + mediabox[1]
                 x = int(convert(obj.bbox[0], hei)) + mediabox[0]
                 w = int(convert(obj.width, hei))
                 h = int(convert(obj.height, hei))
-                if w > 1000 and 300 < h < 1000:
-                    cv2.rectangle(m_image, (x, y), (x + w, y - h), color, ww)
+
+                cv2.rectangle(m_image, (x, y), (x + w, y - h), color, ww)
+            # elif isinstance(obj, pdfminer.layout.LTTextBoxHorizontal):
+            #     color = (0, 0, 255)
+            #     y = int(convert_y(obj.bbox[1], hei)) + mediabox[1]
+            #     x = int(convert(obj.bbox[0], hei)) + mediabox[0]
+            #     w = int(convert(obj.width, hei))
+            #     h = int(convert(obj.height, hei))
+            #     if w < 1000 and h < 100:
+            #         cv2.rectangle(m_image, (x, y), (x + w, y - h), color, ww)
+            # elif isinstance(obj, pdfminer.layout.LTTextBoxVertical):
+            #     color = (0, 0, 255)
+            #     y = int(convert_y(obj.bbox[1], hei)) + mediabox[1]
+            #     x = int(convert(obj.bbox[0], hei)) + mediabox[0]
+            #     w = int(convert(obj.width, hei))
+            #     h = int(convert(obj.height, hei))
+            #     if h < 100 and w < 50:
+            #         cv2.rectangle(m_image, (x, y), (x + w, y - h), color, ww)
+            # elif isinstance(obj, pdfminer.layout.LTCurve):
+            #     color = (0, 255, 0)
+            #     y = int(convert_y(obj.bbox[1], hei)) + mediabox[1]
+            #     x = int(convert(obj.bbox[0], hei)) + mediabox[0]
+            #     w = int(convert(obj.width, hei))
+            #     h = int(convert(obj.height, hei))
+            #     if (h < 2000):
+            #         cv2.rectangle(m_image, (x, y), (x + w, y - h), color, ww)
             elif isinstance(obj, pdfminer.layout.LTContainer) and not isinstance(obj, pdfminer.layout.LTTextBox):
                 parse_obj(obj._objs, mediabox)
 

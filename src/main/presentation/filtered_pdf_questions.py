@@ -6,7 +6,7 @@ def start(config):
     questions = config.repo.all()
 
     print("Filtering questions that we are able to process")
-    questions, excluded = filtering.pdf_questions(questions, config.working_pdf, config.working_dir + "/filtering/")
+    questions, excluded = filtering.pdf_questions(questions, config.working_pdf, config.filter_path)
 
     if len(excluded) == 0:
         print("All questions were accepted")

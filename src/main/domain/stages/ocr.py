@@ -7,6 +7,7 @@ from google.cloud import vision
 from google.protobuf import json_format
 
 
+
 def async_detect_document(gcs_source_uri, gcs_destination_uri):
     """OCR with PDF/TIFF as source files on GCS"""
     # Supported mime_types are: 'application/pdf' and 'image/tiff'
@@ -134,10 +135,12 @@ def print_format(annotation):
 
 dest = "gs://enempdf/parsed/"
 
-# async_detect_document("gs://enempdf/1.pdf",
-#                       "gs://enempdf/parsed/")
+# async_detect_document("gs://enempdf/helper.pdf",
+#                       dest)
 
 # json = view(dest)
+#
+# print json
 
 with open('/home/daniel/Downloads/data.json') as j:
     print_format(json.load(j)["responses"][0]["fullTextAnnotation"])

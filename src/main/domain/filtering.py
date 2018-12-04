@@ -7,10 +7,9 @@ from pdfminer.layout import LAParams
 from pdfminer.converter import PDFPageAggregator
 import pdfminer
 
-def pdf_questions(questions, pdf_input_path, working_dir):
+def pdf_questions(questions, pdf_input_path, path):
     filtered = []
     excluded = []
-    path = working_dir + "/current.pdf"
     for question in questions:
         if _contain_image(question, pdf_input_path, path):
             excluded.append(question)

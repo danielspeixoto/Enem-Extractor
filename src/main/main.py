@@ -1,16 +1,16 @@
 from data.model import configuration
-from presentation import filtered_pdf_questions
-from presentation.save_questions_pdf import save_questions_pdf
+from presentation import filtered_pdf_questions, split_questions
+from presentation.save_questions_pdf import format_save
 
 print("Started")
 config = configuration.Environment()
 
-# questions, has_error = split_questions.start(config)
+questions, has_error = split_questions.start(config)
 
 print("Saving questions as PDF")
-# save_questions_pdf(config)
+format_save(config)
 
-filtered_pdf_questions.start(config)
+# filtered_pdf_questions.start(config)
 
 # if has_error:
 #     print("Execution finished, errors were detected")
