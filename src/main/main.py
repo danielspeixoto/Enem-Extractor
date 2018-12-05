@@ -1,11 +1,11 @@
 from data.model import configuration
 from presentation import filtered_pdf_questions, split_questions
-from presentation.save_questions_pdf import format_save
+from presentation.export import format_save
 
 print("Started")
 config = configuration.Environment()
 
-questions, has_error = split_questions.start(config)
+# questions, has_error = split_questions.start(config)
 
 print("Saving questions as PDF")
 format_save(config)
