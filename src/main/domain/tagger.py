@@ -24,9 +24,9 @@ def domain_number(year, day, question_idx):
             else:
                 return "naturais", question_idx
         else:
-            if question_idx < 5:
+            if question_idx <= 5:
                 return "ingles", question_idx
-            elif question_idx < 10:
+            elif question_idx <= 10:
                 return "espanhol", question_idx - 5
             elif question_idx < 50:
                 return "linguagens", question_idx - 5

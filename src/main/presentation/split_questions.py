@@ -1,3 +1,5 @@
+import time
+
 from domain.stages import splitter
 from domain.stages import pre_processing
 from domain.stages import validation
@@ -23,6 +25,9 @@ def start(environment):
     is_validated = validator.validate(questions)
 
     environment.repo.save(questions)
+
+
+    time.sleep(60)
 
     if not is_validated:
         print("Data inconsistency, check results")
