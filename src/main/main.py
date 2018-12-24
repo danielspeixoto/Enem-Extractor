@@ -10,8 +10,18 @@ config = configuration.Environment()
 print("Saving questions as PDF")
 format_save(config)
 
-# filtered_pdf_questions.start(config)
 
+
+
+
+
+
+
+
+
+
+# filtered_pdf_questions.start(config)
+#
 # if has_error:
 #     print("Execution finished, errors were detected")
 #     exit(1)
