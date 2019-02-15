@@ -6,29 +6,30 @@ from data.repository.PickleRepository import PickleRepository
 class Environment:
 
     def __init__(self, config_path=""):
-        self.enem_path = "/home/daniel/Documents/enem/2017-2.pdf"
-        self.microdata_path = "/home/daniel/Documents/enem/microdados_enem2017/DADOS/ITENS_PROVA_2017.csv"
-        self.amount_of_questions = 90
-        self.one_column_pages = [2, 5, 10, 11, 13, 20, 26, 28]
+        self.enem_path = "/home/daniel/Documents/enem/2016-2.pdf"
+        self.microdata_path = "/home/daniel/Documents/enem/microdados_enem2016/DADOS/itens_prova_2016.csv"
+        self.amount_of_questions = 95
+        self.one_column_pages = [24, 27]
         self.excluded_pages = [
             # Front page
             0,
+            1,
             # Dissertation instructions
             # 18,
             # Dissertation
             31
         ]
         self.metadata = {
-            "year": 2017,
+            "year": 2016,
             "day": 2,
             "color": "AZUL"
         }
 
 
 
-        self.working_dir = "/home/daniel/PycharmProjects/enem-parser/data/"
+        self.working_dir = "/home/daniel/work/enem-parser/data/"
         # Fixed value, TODO: Use project location reference
-        self.res_folder = "/home/daniel/PycharmProjects/enem-parser/res/"
+        self.res_folder = "/home/daniel/work/enem-parser/res/"
         # Defined by previous attributes
         self.question_pattern = self.res_folder + "/question_pattern.png"
         self.working_pdf = self.working_dir + "working.pdf"

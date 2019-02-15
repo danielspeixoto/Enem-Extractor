@@ -23,6 +23,7 @@ def find(query, universe):
         y = img_y - y
     return x, y
 
+
 def size(img_path):
     image = cv2.imread(img_path)
     image_y, image_x, _ = image.shape

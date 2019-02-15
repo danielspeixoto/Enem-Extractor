@@ -43,12 +43,11 @@ def split_in_questions(pdf_input_path, working_dir, pattern_path):
             questions[-1].add_part(pdf_portion)
             pdf_portion.lower, pdf_portion.upper = get_dimensions(current_pdf_path)
 
-
         # It is allowed 100 units of distance from start
         # to not be considered another question
         # This is also used to skip section start statements
         # Ex.: Mathematics and Physics questions from x to y...
-        if upper is not None and upper[1] < pdf_top - 100:
+        if upper is not None and upper[1] < pdf_top - 85:
             print("|---- Question " + str(question_number) + ".2")
             questions[-1].add_part(pdf_portion)
             _, pdf_portion.upper = get_dimensions(current_pdf_path)
