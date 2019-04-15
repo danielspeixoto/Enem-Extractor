@@ -2,7 +2,7 @@ import os
 
 from PyPDF2 import PdfFileMerger, PdfFileReader, PdfFileWriter
 
-from util.vision import pdf_utils
+from src.main.domain.PDF import mod_page
 
 
 class Exam:
@@ -10,6 +10,7 @@ class Exam:
     def __init__(self):
         self.questions = []
         self.pdf_file = None
+
 
 class Question:
 
@@ -21,13 +22,11 @@ class Question:
     def add_part(self, part):
         self.parts.append(part)
 
-    def save_as_pdf(self, pdf_input_path, output_path):
+    def save_as_pdf(self, pdf_input_path, working_dir, output_path):
         i = 0
-        if not os.path.exists(output_path):
-            os.mkdir(output_path, 0755)
         for part in self.parts:
             part.save_as_pdf(pdf_input_path,
-                             output_path + "/" +
+                             working_dir + "/" +
                              str(i) + ".pdf")
             i += 1
 
@@ -35,17 +34,16 @@ class Question:
         for i in range(len(self.parts)):
             merger.append(
                 PdfFileReader(
-                    file(
-                        output_path + "/" + str(i) + ".pdf", 'rb'
+                    open(
+                        working_dir + "/" + str(i) + ".pdf", 'rb'
                     )
                 )
             )
-        merger.write(output_path + "/" + "question.pdf")
+        merger.write(output_path)
         for i in range(len(self.parts)):
             os.remove(
-                output_path + "/" + str(i) + ".pdf"
+                working_dir + "/" + str(i) + ".pdf"
             )
-
 
 
 class Portion:
@@ -61,11 +59,10 @@ class Portion:
             output = PdfFileWriter()
 
             page = pdf_input.getPage(self.page)
-            page = pdf_utils.mod_page(page,
-                                      upper=self.upper,
-                                      lower=self.lower)
+            page = mod_page(page,
+                            upper=self.upper,
+                            lower=self.lower)
             output.addPage(page)
 
             with open(output_path, "wb") as out_f:
                 output.write(out_f)
-

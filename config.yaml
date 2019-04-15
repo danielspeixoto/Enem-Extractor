@@ -1,0 +1,12 @@
+year: 2016
+input: /Users/danielspeixoto/Documents/enem/provas/20162azul.pdf
+micro_data: ds
+one_column_pages:
+  - 24
+  - 27
+excluded_pages:
+  - 0
+  - 1
+  - 31
+day: 2
+variant: AZUL

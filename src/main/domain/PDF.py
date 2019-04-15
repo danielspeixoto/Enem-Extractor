@@ -1,4 +1,5 @@
-from pyPdf import PdfFileWriter, PdfFileReader
+from PyPDF2 import PdfFileWriter, PdfFileReader
+
 
 def mod_page(crop_page, lower=None, upper=None):
     if lower is None:
@@ -40,6 +41,7 @@ def crop_page(page, output_path, lower=None, upper=None):
     with open(output_path, "wb") as output_file:
         pdf_output.write(output_file)
 
+
 def save_page(pdf_input_path, pdf_output, page_number):
     with open(pdf_input_path) as question_pdf_file:
         enem_pdf = PdfFileReader(question_pdf_file)
@@ -49,6 +51,7 @@ def save_page(pdf_input_path, pdf_output, page_number):
             output.addPage(page)
             output.write(page_file)
 
+
 def copy_page(pdf_input_path, pdf_output, page_number):
     with open(pdf_input_path) as question_pdf_file:
         enem_pdf = PdfFileReader(question_pdf_file)
@@ -57,6 +60,7 @@ def copy_page(pdf_input_path, pdf_output, page_number):
             output = PdfFileWriter()
             output.addPage(page)
             output.write(page_file)
+
 
 def mod_save_page(pdf_input_path, pdf_output, page_number, lower=None, upper=None):
     with open(pdf_input_path) as question_pdf_file:
