@@ -1,4 +1,5 @@
 import os
+import shutil
 
 from src.main.data.Config import YAMLConfig
 from src.main.data.JSONExporter import JSONExporter
@@ -8,6 +9,9 @@ from src.main.domain.Preprocessor import ENEMPreProcessor
 from src.main.domain.Splitter import ENEMSplitter
 
 output = "/Users/danielspeixoto/experiments/enem-parser"
+if os.path.exists(output):
+    shutil.rmtree(output)
+os.mkdir(output)
 
 config = YAMLConfig("/Users/danielspeixoto/IdeaProjects/enem-parser/config.yaml")
 input_path = config.config["input"]
@@ -21,7 +25,6 @@ preprocessor = ENEMPreProcessor()
 splitter = ENEMSplitter("/Users/danielspeixoto/IdeaProjects/enem-parser/src/res/question_pattern.png")
 
 posprocessor = ENEMPosProcessor(
-    input_path,
     config.config["year"],
     config.config["day"],
     config.config["variant"],

@@ -43,7 +43,7 @@ def crop_page(page, output_path, lower=None, upper=None):
 
 
 def save_page(pdf_input_path, pdf_output, page_number):
-    with open(pdf_input_path) as question_pdf_file:
+    with open(pdf_input_path, "rb") as question_pdf_file:
         enem_pdf = PdfFileReader(question_pdf_file)
         page = enem_pdf.getPage(page_number)
         with open(pdf_output, "wb") as page_file:
@@ -53,7 +53,7 @@ def save_page(pdf_input_path, pdf_output, page_number):
 
 
 def copy_page(pdf_input_path, pdf_output, page_number):
-    with open(pdf_input_path) as question_pdf_file:
+    with open(pdf_input_path, "rb") as question_pdf_file:
         enem_pdf = PdfFileReader(question_pdf_file)
         page = enem_pdf.getPage(page_number)
         with open(pdf_output, "a+") as page_file:
@@ -63,7 +63,7 @@ def copy_page(pdf_input_path, pdf_output, page_number):
 
 
 def mod_save_page(pdf_input_path, pdf_output, page_number, lower=None, upper=None):
-    with open(pdf_input_path) as question_pdf_file:
+    with open(pdf_input_path, "rb") as question_pdf_file:
         enem_pdf = PdfFileReader(question_pdf_file)
         page = enem_pdf.getPage(page_number)
         mod_page(page, lower, upper)

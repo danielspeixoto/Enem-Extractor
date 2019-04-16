@@ -23,8 +23,11 @@ class ENEMExporter:
     def export(self, input_path: str, working_dir: str, config: YAMLConfig):
         output_path = working_dir + "/output.pdf"
 
+        pre_dir = working_dir + "/preprocessor/"
+        os.mkdir(pre_dir)
+
         self.preprocessor.linear(
-            working_dir + "/preprocessor/",
+            pre_dir,
             input_path,
             output_path,
             config.config["one_column_pages"],
@@ -32,12 +35,15 @@ class ENEMExporter:
         )
 
         def on_next(question):
-            pos_dir = working_dir + "/" + str(question.number)
-            os.mkdir(pos_dir, 0o755)
-            meta = self.posprocessor.posprocess(question, pos_dir)
+            pos_dir = working_dir + "/posprocessor/" + str(question.number)
+            os.makedirs(pos_dir, 0o755)
+            meta = self.posprocessor.posprocess(output_path, question, pos_dir)
             self.repo.save(meta)
 
+        splitter_dir = working_dir + "/splitter/"
+        os.mkdir(splitter_dir)
+
         self.splitter.split(
-            working_dir + "/splitter/",
+            splitter_dir,
             output_path
         ).subscribe(on_next=on_next)

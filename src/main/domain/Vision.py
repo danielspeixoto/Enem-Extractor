@@ -1,4 +1,5 @@
 import cv2
+import imutils as imutils
 import numpy as np
 from pdf2image import convert_from_path
 
@@ -6,21 +7,26 @@ from pdf2image import convert_from_path
 def find(query, universe):
     image = cv2.imread(universe)
     template = cv2.imread(query)
-    res = cv2.matchTemplate(image, template, cv2.TM_CCOEFF_NORMED)
     x = y = None
-    _, confidence, _, coordinates = cv2.minMaxLoc(res)
+    bigger = (0, 0)
     threshold = 0.6
+    found = False
+    for scale in [0.8, 0.9, 1]:
+        resized = imutils.resize(image, width=int(image.shape[1] * scale))
+        if resized.shape[0] >= template.shape[0]:
+            res = cv2.matchTemplate(resized, template, cv2.TM_CCOEFF_NORMED)
+        else:
+            return x, y
+        loc = np.where(res >= threshold)
+        img_x, img_y = size(universe)
+        points = zip(*loc[::-1])
+        for pt in points:
+            if bigger[1] < (img_y - pt[1])/img_y:
+                found = True
+                bigger = pt[0]/img_x, (img_y - pt[1])/img_y
 
-    loc = np.where(res >= max(threshold, confidence - 0.1))
-    bigger = (10000, 10000)
-    for pt in zip(*loc[::-1]):
-        if bigger[1] > pt[1]:
-            bigger = pt
-
-    if confidence > threshold:
-        x, y = bigger[0], bigger[1]
-        _, img_y = size(universe)
-        y = img_y - y
+    if found:
+        return bigger
     return x, y
 
 

@@ -13,6 +13,7 @@ rx = "*"
 pyyaml = "*"
 pandas = "*"
 opencv-python = "*"
+imutils = "*"
 
 [requires]
 python_version = "3.7"

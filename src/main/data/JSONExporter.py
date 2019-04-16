@@ -10,6 +10,3 @@ class JSONExporter:
         with open(self.storage_path + "/" +
                   str(question["number"]) + ".json", "w") as fp:
             json.dump(question, fp)
-
-        exit(1)
-

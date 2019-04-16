@@ -13,7 +13,7 @@ class ENEMSplitter:
         self.pattern_path = pattern_path
 
     def split(self, working_dir: str, pdf_input_path)-> rx.Observable:
-        def observe(observer):
+        def observe(observer, scheduler):
             filename = "enem"
             img_path = working_dir + filename + ".jpg"
             current_pdf_path = working_dir + filename + "-aux0.pdf"
@@ -26,7 +26,7 @@ class ENEMSplitter:
             # Copies original PDF
             crop(pdf_input_path, current_pdf_path)
 
-            with open(pdf_input_path) as question_pdf_file:
+            with open(pdf_input_path, "rb") as question_pdf_file:
                 enem_pdf = PdfFileReader(question_pdf_file)
                 num_of_pages = enem_pdf.numPages
                 first_page = enem_pdf.getPage(0)
@@ -44,18 +44,14 @@ class ENEMSplitter:
                 pdf_portion = Portion()
                 pdf_portion.page = page_number
 
-                if upper is None:
-                    print("|---- Question " + str(question_number) + ".x")
-                    questions[-1].add_part(pdf_portion)
-                    pdf_portion.lower, pdf_portion.upper = self.get_dimensions(current_pdf_path)
-
                 # It is allowed 100 units of distance from start
                 # to not be considered another question
                 # This is also used to skip section start statements
                 # Ex.: Mathematics and Physics questions from x to y...
-                if upper is not None and upper[1] < pdf_top - 85:
+                if upper is not None and upper[1] < pdf_top - 110:
                     print("|---- Question " + str(question_number) + ".2")
-                    questions[-1].add_part(pdf_portion)
+                    # questions[-1].add_part(pdf_portion)
+                    question.add_part(pdf_portion)
                     _, pdf_portion.upper = self.get_dimensions(current_pdf_path)
                 while upper is not None:
                     # A question end is where a separator is found
@@ -64,6 +60,8 @@ class ENEMSplitter:
                     # If last portion was part of a already existing question
                     # adds it to last inserted question
 
+                    if question_number >= 1:
+                        observer.on_next(question)
                     question_number += 1
                     print("|---- Question " + str(question_number) + ".1")
                     question = Question()
@@ -73,7 +71,6 @@ class ENEMSplitter:
                     pdf_portion.page = page_number
                     question.add_part(pdf_portion)
                     # questions.append(question)
-                    observer.on_next(question)
                     # Another question start is where a separator is found
                     pdf_portion.upper = upper
 
@@ -90,15 +87,15 @@ class ENEMSplitter:
                     lower, upper = self._get_coordinates(current_pdf_path,
                                                          img_path,
                                                          self.pattern_path)
+            observer.on_next(question)
             os.remove(aux_pdf_path)
             os.remove(current_pdf_path)
             os.remove(img_path)
-            observer.on_complete()
 
         return rx.create(observe)
 
     def get_dimensions(self, pdf_path):
-        with open(pdf_path) as page_file:
+        with open(pdf_path, "rb") as page_file:
             page_pdf = PdfFileReader(page_file)
             page = page_pdf.getPage(0)
             lower = (page.mediaBox.getLowerLeft_x(),
@@ -113,14 +110,13 @@ class ENEMSplitter:
         if pattern_occurrence_y is None:
             return None, None
 
-        with open(pdf_page_path) as page_file:
+        with open(pdf_page_path, "rb") as page_file:
             page_pdf = PdfFileReader(page_file)
             page = page_pdf.getPage(0)
             pdf_height = page.mediaBox.getUpperRight_y() - page.mediaBox.getLowerLeft_y()
 
-        _, img_height = size(img_path)
         # Returns the equivalent point at the specified PDF
-        pattern_pdf_y = int((pdf_height * pattern_occurrence_y) / img_height)
+        pattern_pdf_y = int(pdf_height * pattern_occurrence_y)
 
         pattern_lower_coordinates = (page.mediaBox.getLowerLeft_x(),
                                      page.mediaBox.getLowerLeft_y())
