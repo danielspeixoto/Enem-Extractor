@@ -48,7 +48,7 @@ class ENEMSplitter:
                 # to not be considered another question
                 # This is also used to skip section start statements
                 # Ex.: Mathematics and Physics questions from x to y...
-                if upper is not None and upper[1] < pdf_top - 110:
+                if upper is None or upper[1] < pdf_top - 100:
                     print("|---- Question " + str(question_number) + ".2")
                     # questions[-1].add_part(pdf_portion)
                     question.add_part(pdf_portion)

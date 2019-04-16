@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import base64
 
 from src.main.aggregates.pdf_item import Question
 
@@ -27,17 +28,18 @@ class ENEMPosProcessor:
 
         domain, question_idx = self._domain(question.number)
 
-        meta = {
-            "year": str(self.year),
-            "source": "ENEM",
-            "variant": self.variant,
-            "domain": domain,
-            "number": str(question_idx + 1),
-            "answer": self._answer(question_idx),
-            # "pdf": open(output, "rb").read().decode("utf-8")
-        }
+        with open(output, "rb") as pdf:
+            meta = {
+                "year": str(self.year),
+                "source": "ENEM",
+                "variant": self.variant,
+                "domain": domain,
+                "number": str(question_idx + 1),
+                "answer": self._answer(question_idx),
+                "pdf": base64.b64encode(pdf.read()).decode()
+            }
 
-        return meta
+            return meta
 
     def _domain(self, question_num: int):
         question_idx = question_num - 1

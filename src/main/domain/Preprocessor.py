@@ -23,17 +23,17 @@ class ENEMPreProcessor:
 
         crop(input_path,
              left_column_pdf_path,
-             (55, 60), (310, 760),
+             (55, 60), (310, 750),
              excluded=excluded_pages + one_column_pages)
 
         crop(input_path,
              right_column_pdf_path,
-             (315, 60), (570, 760),
+             (315, 60), (570, 750),
              excluded=excluded_pages + one_column_pages)
 
         crop(input_path,
              one_column_pdf_path,
-             (55, 60), (570, 760), pages=one_column_pages)
+             (55, 60), (570, 750), pages=one_column_pages)
 
         one_column_pages_idx = 0
         two_column_pages_idx = 0

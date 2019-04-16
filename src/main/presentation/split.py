@@ -13,7 +13,7 @@ if os.path.exists(output):
     shutil.rmtree(output)
 os.mkdir(output)
 
-config = YAMLConfig("/Users/danielspeixoto/IdeaProjects/enem-parser/config.yaml")
+config = YAMLConfig("/Users/danielspeixoto/IdeaProjects/enem-parser/exams/16-2-azul.yaml")
 input_path = config.config["input"]
 
 json = output + "/json"
