@@ -36,8 +36,8 @@ def size(img_path):
     return image_x, image_y
 
 
-def pdf2img(input_path, output_path):
-    pages = convert_from_path(input_path, 500)
+def pdf2img(input_path, output_path, dpi=500):
+    pages = convert_from_path(input_path, dpi)
 
     for page in pages:
         page.save(output_path, 'JPEG')

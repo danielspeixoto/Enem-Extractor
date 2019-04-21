@@ -16,7 +16,7 @@ class Question:
 
     def __init__(self):
         self.parts = []
-        self.number = None
+        self.occurrence_idx = None
         self.pdf_file = None
 
     def add_part(self, part):

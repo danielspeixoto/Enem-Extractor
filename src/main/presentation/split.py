@@ -16,8 +16,11 @@ os.mkdir(output)
 config = YAMLConfig("/Users/danielspeixoto/IdeaProjects/enem-parser/exams/16-2-azul.yaml")
 input_path = config.config["input"]
 
-json = output + "/json"
-os.mkdir(json, 0o755)
+json = output + "/json/" + \
+       str(config.config["year"]) +\
+       "/" + str(config.config["day"]) +\
+       "/" + str(config.config["variant"])
+os.makedirs(json, 0o755)
 repo = JSONExporter(json)
 
 preprocessor = ENEMPreProcessor()

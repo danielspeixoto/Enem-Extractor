@@ -19,6 +19,7 @@ class ENEMExporter:
         self.preprocessor = preprocessor
         self.posprocessor = posprocessor
         self.splitter = splitter
+        self.amount_exported = 0
 
     def export(self, input_path: str, working_dir: str, config: YAMLConfig):
         output_path = working_dir + "/output.pdf"
@@ -35,7 +36,8 @@ class ENEMExporter:
         )
 
         def on_next(question):
-            pos_dir = working_dir + "/posprocessor/" + str(question.number)
+            pos_dir = working_dir + "/posprocessor/" + str(self.amount_exported)
+            self.amount_exported += 1
             os.makedirs(pos_dir, 0o755)
             meta = self.posprocessor.posprocess(output_path, question, pos_dir)
             self.repo.save(meta)

@@ -66,13 +66,14 @@ class ENEMSplitter:
                     print("|---- Question " + str(question_number) + ".1")
                     question = Question()
                     question.pdf_file = pdf_input_path
-                    question.number = question_number
+                    question.occurrence_idx = question_number - 1
                     pdf_portion = Portion()
                     pdf_portion.page = page_number
                     question.add_part(pdf_portion)
                     # questions.append(question)
                     # Another question start is where a separator is found
-                    pdf_portion.upper = upper
+                    # minus the separator height
+                    pdf_portion.upper = upper[0], upper[1] - 33
 
                     page_lower, page_upper = self.get_dimensions(current_pdf_path)
                     pdf_portion.lower = page_lower
