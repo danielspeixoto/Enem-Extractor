@@ -1,15 +1,12 @@
 year: 2016
-input: /Users/danielspeixoto/Documents/enem/provas/20162azul.pdf
+input: /Volumes/Data/enem/20162amarelo.pdf
 micro_data: /Users/danielspeixoto/Documents/enem/provas/Microdados_enem_2016/DADOS/itens_prova_2016.csv
 one_column_pages:
-  - 7
-  - 12
-  - 26
-  - 27
-  - 29
+  - 17
+  - 21
 excluded_pages:
   - 0
-  - 17
+  - 1
   - 31
 day: 2
-variant: AZUL
+variant: AMARELA
