@@ -49,7 +49,7 @@ def pdf2img(input_path, output_path, dpi=500):
         break
 
 
-def pdf2multiple_img(work_dir, input_path, output_path, dpi=500):
+def pdf2multiple_img(work_dir, input_path, output_path, dpi=1000):
     convert_from_path(input_path, dpi, output_folder=work_dir, fmt="jpg")
 
     paths = [work_dir + "/" + f for f in listdir(work_dir)

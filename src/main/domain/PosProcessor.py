@@ -5,6 +5,13 @@ import base64
 from src.main.aggregates.pdf_item import Question
 from src.main.domain.Vision import pdf2img, pdf2multiple_img
 
+INGLES = "Inglês"
+ESPANHOL = "Espanhol"
+LC = "Linguagens"
+MT = "matemática"
+CH = "humanas"
+CN = "naturais"
+
 
 class ENEMPosProcessor:
 
@@ -34,6 +41,10 @@ class ENEMPosProcessor:
         pdf2multiple_img(img_dir, output, output_img, 250)
 
         domain, question_num = self._domain(question.occurrence_idx)
+        print(domain)
+        ref, ans = self._reference_id(question.occurrence_idx)
+
+        tags = [domain.lower()]
 
         with open(output_img, "rb") as file:
             meta = {
@@ -42,10 +53,11 @@ class ENEMPosProcessor:
                 "variant": self.variant,
                 "domain": domain,
                 "number": question_num,
-                "answer": self._answer(question.occurrence_idx),
-                "pdf": base64.b64encode(file.read()).decode(),
-                "referenceId": str(self._reference_id(question.occurrence_idx)),
-                "tags": []
+                "answer": ans,
+                "view": base64.b64encode(file.read()).decode(),
+                "itemCode": str(ref),
+                "tags": tags,
+                "referenceId": "ENEM-" + str(self.year) + "-" + str(self.day) + "-" + str(question.occurrence_idx)
             }
 
             return meta
@@ -57,52 +69,69 @@ class ENEMPosProcessor:
         if self.year >= 2017:
             if self.day == 2:
                 if num <= 135:
-                    return "naturais", num
+                    return CN, num
                 else:
-                    return "matemática", num
+                    return MT, num
             else:
                 if num <= 5:
-                    return "inglês", num
+                    return INGLES, num
                 elif num <= 10:
-                    return "espanhol", num - 5
+                    return ESPANHOL, num - 5
                 elif num <= 50:
-                    return "linguagens", num - 5
+                    return LC, num - 5
                 else:
-                    return "humanas", num - 5
+                    return CH, num - 5
         else:
             if self.day == 2:
                 if num <= 95:
-                    return "ingles", num
+                    return INGLES, num
                 elif num <= 100:
-                    return "espanhol", num - 5
+                    return ESPANHOL, num - 5
                 elif num <= 140:
-                    return "linguagens", num - 5
+                    return LC, num - 5
                 else:
-                    return "matematica", num - 5
+                    return MT, num - 5
             else:
                 if num <= 45:
-                    return "humanas", num
+                    return CH, num
                 else:
-                    return "naturais", num
+                    return CN, num
 
-    def _answer(self, question_idx: int):
-        if self.day == 2:
-            question_idx += 90
-        if self.year >= 2017:
-            # First day had 95 questions instead of only 90
-            question_idx += 5
+    def _reference_id(self, occurrence_idx: int):
         df = pd.read_csv(self.microdata_path, sep=";")
         df = df.loc[df['TX_COR'] == self.variant]
-        ans = df.iloc[question_idx, 3]
-        return ord(ans[0]) - ord('A')
 
-    def _reference_id(self, question_idx: int):
-        if self.day == 2:
-            question_idx += 90
+        domain = "LC"
+        num = occurrence_idx + 1
         if self.year >= 2017:
-            # First day had 95 questions instead of only 90
-            question_idx += 5
-        df = pd.read_csv(self.microdata_path, sep=";")
-        df = df.loc[df['TX_COR'] == self.variant]
-        ans = df.iloc[question_idx, 2]
-        return ans
+            if self.day == 2:
+                if num <= 135:
+                    domain = "CN"
+                else:
+                    domain = "MT"
+            elif num >= 51:
+                domain = "CH"
+        else:
+            if self.day == 2:
+                if num >= 51:
+                    domain = "MT"
+            elif self.day == 1:
+                if num <= 45:
+                    domain = "CH"
+                else:
+                    domain = "CN"
+
+        df = df.loc[df['SG_AREA'] == domain]
+
+        mod = 45
+        print(domain)
+        if (domain == "LC") or \
+                (self.year < 2017 and self.day == 2):
+            mod = 50
+
+        loc = (occurrence_idx % mod)
+        print(loc)
+
+        ref = df.iloc[loc, 2]
+        ans = df.iloc[loc, 3]
+        return ref, ord(ans[0]) - ord('A')
