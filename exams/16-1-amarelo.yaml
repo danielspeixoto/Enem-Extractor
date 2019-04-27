@@ -1,6 +1,6 @@
 year: 2016
 input: /Volumes/Data/enem/20161amarelo.pdf
-micro_data: /Users/danielspeixoto/Documents/enem/provas/Microdados_enem_2016/DADOS/itens_prova_2016.csv
+micro_data: /Volumes/Data/enem/microdados/Microdados_enem_2016/DADOS/itens_prova_2016.csv
 one_column_pages:
   - 1
   - 10

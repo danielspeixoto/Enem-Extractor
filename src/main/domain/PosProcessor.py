@@ -125,8 +125,7 @@ class ENEMPosProcessor:
 
         mod = 45
         print(domain)
-        if (domain == "LC") or \
-                (self.year < 2017 and self.day == 2):
+        if (self.year < 2017 and self.day == 2) or (self.year >= 2017 and self.day == 1):
             mod = 50
 
         loc = (occurrence_idx % mod)

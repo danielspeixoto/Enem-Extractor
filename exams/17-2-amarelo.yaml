@@ -1,0 +1,17 @@
+year: 2017
+input: /Volumes/Data/enem/20172amarelo.pdf
+micro_data: /Volumes/Data/enem/microdados/Microdados Enem 2017/DADOS/ITENS_PROVA_2017.csv
+one_column_pages:
+  - 4
+  - 5
+  - 8
+  - 9
+  - 13
+  - 21
+  - 27
+  - 29
+excluded_pages:
+  - 0
+  - 31
+day: 2
+variant: AMARELA

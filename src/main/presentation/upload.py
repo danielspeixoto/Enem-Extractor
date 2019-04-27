@@ -5,9 +5,9 @@ from src.main.data.Config import YAMLConfig
 from src.main.data.JSONExporter import JSONExporter
 import requests
 
-output = "/Users/danielspeixoto/experiments/enem-parser"
+output = "/Volumes/Data/enem/experiments/"
 
-config = YAMLConfig("/Users/danielspeixoto/IdeaProjects/enem-parser/exams/16-1-amarelo.yaml")
+config = YAMLConfig("/Users/danielspeixoto/IdeaProjects/enem-parser/exams/16-2-amarelo.yaml")
 
 jsonRepo = output + "/json/" + \
            str(config.config["year"]) + \
@@ -26,5 +26,3 @@ for q in repo.all():
         exit(1)
     i += 1
     print(str(i) + " Questions uploaded")
-    # Reduce Server Load
-    time.sleep(1)

@@ -1,0 +1,13 @@
+year: 2015
+input: /Volumes/Data/enem/20151amarelo.pdf
+micro_data: /Volumes/Data/enem/microdados/microdados_enem2015/DADOS/MICRODADOS_ENEM_2015.csv
+one_column_pages:
+  - 5
+  - 7
+  - 9
+  - 26
+excluded_pages:
+  - 0
+  - 31
+day: 1
+variant: AMARELA

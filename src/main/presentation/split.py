@@ -8,12 +8,12 @@ from src.main.domain.PosProcessor import ENEMPosProcessor
 from src.main.domain.Preprocessor import ENEMPreProcessor
 from src.main.domain.Splitter import ENEMSplitter
 
-output = "/Users/danielspeixoto/experiments/enem-parser"
+output = "/Volumes/Data/enem/experiments/"
 if os.path.exists(output):
     shutil.rmtree(output)
 os.mkdir(output)
 
-config = YAMLConfig("/Users/danielspeixoto/IdeaProjects/enem-parser/exams/16-1-amarelo.yaml")
+config = YAMLConfig("/Users/danielspeixoto/IdeaProjects/enem-parser/exams/17-2-amarelo.yaml")
 input_path = config.config["input"]
 
 json = output + "/json/" + \
