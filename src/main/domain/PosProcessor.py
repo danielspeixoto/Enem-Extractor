@@ -5,13 +5,12 @@ import base64
 from src.main.aggregates.pdf_item import Question
 from src.main.domain.Vision import pdf2img, pdf2multiple_img
 
-INGLES = "Inglês"
-ESPANHOL = "Espanhol"
-LC = "Linguagens"
-MT = "matemática"
-CH = "humanas"
-CN = "naturais"
-
+INGLES = "inglês"
+ESPANHOL = "espanhol"
+LINGUAGENS = "linguagens"
+MATEMATICA = "matemática"
+HUMANAS = "humanas"
+NATURAIS = "naturais"
 
 class ENEMPosProcessor:
 
@@ -41,7 +40,6 @@ class ENEMPosProcessor:
         pdf2multiple_img(img_dir, output, output_img, 250)
 
         domain, question_num = self._domain(question.occurrence_idx)
-        print(domain)
         ref, ans = self._reference_id(question.occurrence_idx)
 
         tags = [domain.lower()]
@@ -49,6 +47,7 @@ class ENEMPosProcessor:
         with open(output_img, "rb") as file:
             meta = {
                 "edition": self.year,
+                "stage": self.day,
                 "source": "ENEM",
                 "variant": self.variant,
                 "domain": domain,
@@ -69,18 +68,18 @@ class ENEMPosProcessor:
         if self.year >= 2017:
             if self.day == 2:
                 if num <= 135:
-                    return CN, num
+                    return NATURAIS, num
                 else:
-                    return MT, num
+                    return MATEMATICA, num
             else:
                 if num <= 5:
                     return INGLES, num
                 elif num <= 10:
                     return ESPANHOL, num - 5
                 elif num <= 50:
-                    return LC, num - 5
+                    return LINGUAGENS, num - 5
                 else:
-                    return CH, num - 5
+                    return HUMANAS, num - 5
         else:
             if self.day == 2:
                 if num <= 95:
@@ -88,14 +87,14 @@ class ENEMPosProcessor:
                 elif num <= 100:
                     return ESPANHOL, num - 5
                 elif num <= 140:
-                    return LC, num - 5
+                    return LINGUAGENS, num - 5
                 else:
-                    return MT, num - 5
+                    return MATEMATICA, num - 5
             else:
                 if num <= 45:
-                    return CH, num
+                    return HUMANAS, num
                 else:
-                    return CN, num
+                    return NATURAIS, num
 
     def _reference_id(self, occurrence_idx: int):
         df = pd.read_csv(self.microdata_path, sep=";")
@@ -105,7 +104,7 @@ class ENEMPosProcessor:
         num = occurrence_idx + 1
         if self.year >= 2017:
             if self.day == 2:
-                if num <= 135:
+                if num <= 45:
                     domain = "CN"
                 else:
                     domain = "MT"
@@ -124,13 +123,10 @@ class ENEMPosProcessor:
         df = df.loc[df['SG_AREA'] == domain]
 
         mod = 45
-        print(domain)
         if (self.year < 2017 and self.day == 2) or (self.year >= 2017 and self.day == 1):
             mod = 50
 
         loc = (occurrence_idx % mod)
-        print(loc)
-
         ref = df.iloc[loc, 2]
         ans = df.iloc[loc, 3]
         return ref, ord(ans[0]) - ord('A')

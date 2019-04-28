@@ -22,7 +22,7 @@ def find(query, universe):
         if resized.shape[0] >= template.shape[0]:
             res = cv2.matchTemplate(resized, template, cv2.TM_CCOEFF_NORMED)
         else:
-            return x, y
+            return None, None
         loc = np.where(res >= threshold)
         img_x, img_y = size(universe)
         points = zip(*loc[::-1])
@@ -56,16 +56,9 @@ def pdf2multiple_img(work_dir, input_path, output_path, dpi=1000):
              if isfile(join(work_dir, f))]
     paths.reverse()
     imgs = [PIL.Image.open(i) for i in paths]
+    imgs.reverse()
 
     if len(paths) > 1:
-        min_shape = sorted([(np.sum(i.size), i.size) for i in imgs])[0][1]
-        # imgs_comb = np.hstack((np.asarray(i.resize(min_shape)) for i in imgs))
-        # imgs_comb = np.hstack((np.asarray(i) for i in imgs))
-        # save that beautiful picture
-        # imgs_comb = PIL.Image.fromarray(imgs_comb)
-
-        # for a vertical stacking it is simple: use vstack
-        # imgs_comb = np.vstack((np.asarray(i.resize(min_shape)) for i in imgs))
         imgs_comb = np.vstack((np.asarray(i) for i in imgs))
         imgs_comb = PIL.Image.fromarray(imgs_comb)
         imgs_comb.save(output_path)

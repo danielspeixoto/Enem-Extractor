@@ -4,7 +4,6 @@ micro_data: /Volumes/Data/enem/microdados/Microdados Enem 2017/DADOS/ITENS_PROVA
 one_column_pages:
   - 15
   - 20
-  - 29
 excluded_pages:
   - 0
   - 18

@@ -92,7 +92,7 @@ class ENEMSplitter:
             os.remove(aux_pdf_path)
             os.remove(current_pdf_path)
             os.remove(img_path)
-
+            observer.on_completed()
         return rx.create(observe)
 
     def get_dimensions(self, pdf_path):
