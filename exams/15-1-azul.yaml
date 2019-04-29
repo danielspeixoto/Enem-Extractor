@@ -1,13 +1,13 @@
 year: 2015
-input: /Volumes/Data/enem/20151amarelo.pdf
+input: /Volumes/Data/enem/20151azul.pdf
 micro_data: /Volumes/Data/enem/microdados/microdados_enem2015/PLANILHAS/ITENS_ENEM_2015.xlsx
 one_column_pages:
-  - 5
-  - 7
+  - 4
   - 9
-  - 26
+  - 12
+  - 30
 excluded_pages:
   - 0
   - 31
 day: 1
-variant: AMARELA
+variant: AZUL

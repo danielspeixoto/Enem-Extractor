@@ -30,7 +30,7 @@ os.mkdir(exporter_dir)
 rootPath = "/Users/danielspeixoto/IdeaProjects/enem-parser"
 print(rootPath)
 
-config = YAMLConfig(rootPath + "/exams/16-2-amarelo.yaml")
+config = YAMLConfig(rootPath + "/exams/14-1-azul.yaml")
 input_path = config.config["input"]
 
 json = output + "/json/" + \
@@ -47,7 +47,7 @@ repo = JSONExporter(json)
 
 preprocessor = ENEMPreProcessor()
 
-splitter = ENEMSplitter(rootPath + "/src/res/question_pattern.png")
+splitter = ENEMSplitter(rootPath + "/src/res/question_pattern_enem2016.jpg")
 
 posprocessor = ENEMPosProcessor(
     config.config["year"],

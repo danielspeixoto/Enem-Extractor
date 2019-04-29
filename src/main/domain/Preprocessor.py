@@ -21,19 +21,33 @@ class ENEMPreProcessor:
             pdf_file = PdfFileReader(input_pdf)
             all_pages = range(pdf_file.numPages)
 
+        top = 755
+        low = 65
+        start = 55
+        middle = 320
+        end = 585
+        gap = 0
+
+        if self.year >= 2016:
+            top = 750
+            low = 60
+            start = 55
+            middle = 310
+            end = 570
+
         crop(input_path,
              left_column_pdf_path,
-             (55, 60), (310, 750),
+             (start, low), (middle, top),
              excluded=excluded_pages + one_column_pages)
 
         crop(input_path,
              right_column_pdf_path,
-             (315, 60), (570, 750),
+             (middle + gap, low), (end, top),
              excluded=excluded_pages + one_column_pages)
 
         crop(input_path,
              one_column_pdf_path,
-             (55, 60), (570, 750), pages=one_column_pages)
+             (start, low), (end, top), pages=one_column_pages)
 
         one_column_pages_idx = 0
         two_column_pages_idx = 0

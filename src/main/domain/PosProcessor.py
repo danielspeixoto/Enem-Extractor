@@ -97,8 +97,6 @@ class ENEMPosProcessor:
                     return NATURAIS, num
 
     def _reference_id(self, occurrence_idx: int):
-        df = pd.read_csv(self.microdata_path, sep=";")
-        df = df.loc[df['TX_COR'] == self.variant]
 
         domain = "LC"
         num = occurrence_idx + 1
@@ -120,13 +118,25 @@ class ENEMPosProcessor:
                 else:
                     domain = "CN"
 
-        df = df.loc[df['SG_AREA'] == domain]
-
         mod = 45
         if (self.year < 2017 and self.day == 2) or (self.year >= 2017 and self.day == 1):
             mod = 50
 
-        loc = (occurrence_idx % mod)
-        ref = df.iloc[loc, 2]
-        ans = df.iloc[loc, 3]
-        return ref, ord(ans[0]) - ord('A')
+        idx = (occurrence_idx % mod)
+        fmt = self.microdata_path.split(".")[1]
+        if fmt == "csv":
+            df = pd.read_csv(self.microdata_path, sep=";")
+            df = df.loc[df['TX_COR'] == self.variant]
+            df = df.loc[domain in df['SG_AREA']]
+            ref = df.iloc[idx, 2]
+            ans = df.iloc[idx, 3]
+            ans = ord(ans[0]) - ord('A')
+        else:
+            # if self.variant != "AZUL":
+            #     print(self.variant + " not supported")
+            #     exit(1)
+            domain += "T"
+            df = pd.read_excel(self.microdata_path, sheet_name=domain)
+            ref = df.iloc[idx, 4]
+            ans = ord(df.iloc[idx, 5]) - ord('A')
+        return ref, ans

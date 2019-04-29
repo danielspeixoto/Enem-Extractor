@@ -89,9 +89,6 @@ class ENEMSplitter:
                                                          img_path,
                                                          self.pattern_path)
             observer.on_next(question)
-            os.remove(aux_pdf_path)
-            os.remove(current_pdf_path)
-            os.remove(img_path)
             observer.on_completed()
         return rx.create(observe)
 

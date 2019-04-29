@@ -15,7 +15,7 @@ def find(query, universe):
     template = cv2.imread(query)
     x = y = None
     bigger = (0, 0)
-    threshold = 0.6
+    threshold = 0.8
     found = False
     for scale in [0.8, 0.9, 1]:
         resized = imutils.resize(image, width=int(image.shape[1] * scale))
@@ -50,7 +50,7 @@ def pdf2img(input_path, output_path, dpi=500):
 
 
 def pdf2multiple_img(work_dir, input_path, output_path, dpi=1000):
-    convert_from_path(input_path, dpi, output_folder=work_dir, fmt="jpg")
+    convert_from_path(input_path, 1000, output_folder=work_dir, fmt="jpg")
 
     paths = [work_dir + "/" + f for f in listdir(work_dir)
              if isfile(join(work_dir, f))]
@@ -58,9 +58,32 @@ def pdf2multiple_img(work_dir, input_path, output_path, dpi=1000):
     imgs = [PIL.Image.open(i) for i in paths]
     imgs.reverse()
 
-    if len(paths) > 1:
-        imgs_comb = np.vstack((np.asarray(i) for i in imgs))
-        imgs_comb = PIL.Image.fromarray(imgs_comb)
-        imgs_comb.save(output_path)
-    else:
-        copyfile(paths[0], output_path)
+    processed = []
+    for RGBimg in imgs:
+        HSVimg = RGBimg.convert('HSV')
+
+        # Make numpy versions
+        RGBna = np.array(RGBimg)
+        HSVna = np.array(HSVimg)
+
+        # Extract Hue
+        H = HSVna[:, :, 0]
+
+        # Find all green pixels, i.e. where 100 < Hue < 140
+        lo, hi = 100, 140
+        # Rescale to 0-255, rather than 0-360 because we are using uint8
+        lo = int((lo * 255) / 360)
+        hi = int((hi * 255) / 360)
+        green = np.where((H > lo) & (H < hi))
+
+        # Make all green pixels white in original image
+        RGBna[green] = [255, 255, 255]
+        processed.append(PIL.Image.fromarray(RGBna))
+
+    imgs_comb = np.vstack((np.asarray(i) for i in processed))
+    imgs_comb = PIL.Image.fromarray(imgs_comb)
+    imgs_comb.save(work_dir + "highres.jpg")
+
+    Image.open(work_dir + "highres.jpg").save(output_path, dpi=(dpi, dpi))
+
+

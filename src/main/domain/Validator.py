@@ -1,6 +1,8 @@
 import io
 
 import base64
+from time import time
+
 import pandas as pd
 from PIL import Image
 
@@ -50,20 +52,33 @@ class Validator:
                 areas = ["CN"] * 45 + ["MT"] * 45
                 positions = list(range(1, 46)) + list(range(1, 46))
 
-        item_codes = []
-        answers = []
-        df = pd.read_csv(self.microdata_path, sep=";")
-        df = df.loc[df['TX_COR'] == self.variant]
-        for i in range(amount_questions):
-            idx = i % mod
-            aux = df.loc[df['SG_AREA'] == areas[i]]
-            testId = aux.iloc[0, 6]
-            if aux.iloc[idx, 0] != positions[i]:
-                print("Incorrect validation, returning wrong item codes")
-                print("Idx: " + str(i) + " Position: " + str(positions[i]))
-                return False
-            item_codes.append(aux.iloc[idx, 2])
-            answers.append(ord(aux.iloc[idx, 3][0]) - ord('A'))
+        item_codes: [int] = []
+        answers: [int] = []
+        fmt = self.microdata_path.split(".")[1]
+        if fmt == "csv":
+            df = pd.read_csv(self.microdata_path, sep=";")
+            df = df.loc[df['TX_COR'] == self.variant]
+            for i in range(amount_questions):
+                idx = i % mod
+                aux = df.loc[df['SG_AREA'] == areas[i]]
+                if aux.iloc[idx, 0] != positions[i]:
+                    print("Incorrect validation, returning wrong item codes")
+                    print("Idx: " + str(i) + " Position: " + str(positions[i]))
+                    return False
+                item_codes.append(aux.iloc[idx, 2])
+                answers.append(ord(aux.iloc[idx, 3][0]) - ord('A'))
+        else:
+            sheets = ["CHT", "CNT"]
+            if self.day == 2:
+                sheets = ["LCT", "MTT"]
+            for sheet in sheets:
+                df = pd.read_excel(self.microdata_path, sheet_name=sheet)
+                for i in range(mod):
+                    if len(item_codes) == amount_questions:
+                        break
+                    idx = i % mod
+                    item_codes.append(df.iloc[idx, 4])
+                    answers.append(ord(df.iloc[idx, 5]) - ord('A'))
 
         for i in range(amount_questions):
             if str(questions[i]["number"]) != str(numbers[i]):
@@ -118,5 +133,6 @@ class Validator:
         #     data_img = base64.b64decode(str(q["view"]))
         #     img = Image.open(io.BytesIO(data_img))
         #     img.show()
+        #     time.sleep(1)
 
         return True
