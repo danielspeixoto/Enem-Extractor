@@ -7,7 +7,7 @@ import requests
 
 output = "/Volumes/Data/enem/experiments/"
 
-config = YAMLConfig("/Users/danielspeixoto/IdeaProjects/enem-parser/exams/16-1-amarelo.yaml")
+config = YAMLConfig("/Users/danielspeixoto/IdeaProjects/enem-parser/exams/14-1-azul.yaml")
 
 jsonRepo = output + "/json/" + \
            str(config.config["year"]) + \

@@ -1,9 +1,10 @@
 import os
+
 import pandas as pd
 import base64
 
 from src.main.aggregates.pdf_item import Question
-from src.main.domain.Vision import pdf2img, pdf2multiple_img
+from src.main.domain.splitter.Vision import pdf2multiple_img
 
 INGLES = "inglês"
 ESPANHOL = "espanhol"
@@ -37,7 +38,7 @@ class ENEMPosProcessor:
 
         img_dir = working_dir + "/img/"
         os.mkdir(img_dir)
-        pdf2multiple_img(img_dir, output, output_img, 250)
+        pdf2multiple_img(img_dir, output, output_img)
 
         domain, question_num = self._domain(question.occurrence_idx)
         ref, ans = self._reference_id(question.occurrence_idx)
@@ -45,21 +46,23 @@ class ENEMPosProcessor:
         tags = [domain.lower()]
 
         with open(output_img, "rb") as file:
-            meta = {
-                "edition": self.year,
-                "stage": self.day,
-                "source": "ENEM",
-                "variant": self.variant,
-                "domain": domain,
-                "number": question_num,
-                "answer": ans,
-                "view": base64.b64encode(file.read()).decode(),
-                "itemCode": str(ref),
-                "tags": tags,
-                "referenceId": "ENEM-" + str(self.year) + "-" + str(self.day) + "-" + str(question.occurrence_idx)
-            }
+            view = base64.b64encode(file.read()).decode()
 
-            return meta
+        meta = {
+            "edition": self.year,
+            "stage": self.day,
+            "source": "ENEM",
+            "variant": self.variant,
+            "domain": domain,
+            "number": question_num,
+            "answer": ans,
+            "view": view,
+            "itemCode": str(ref),
+            "tags": tags,
+            "referenceId": "ENEM-" + str(self.year) + "-" + str(self.day) + "-" + str(question.occurrence_idx)
+        }
+
+        return meta
 
     def _domain(self, occurrence_idx: int):
         num = occurrence_idx + 1

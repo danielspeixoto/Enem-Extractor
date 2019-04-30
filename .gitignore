@@ -3,3 +3,4 @@ venv
 /data
 questions
 *.pyc
+src/secrets

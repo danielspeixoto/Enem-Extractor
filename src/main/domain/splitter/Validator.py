@@ -1,12 +1,11 @@
 import io
 
 import base64
-from time import time
 
 import pandas as pd
 from PIL import Image
 
-from src.main.domain.PosProcessor import NATURAIS, HUMANAS, MATEMATICA, LINGUAGENS, INGLES, ESPANHOL
+from src.main.domain.splitter.PosProcessor import NATURAIS, HUMANAS, MATEMATICA, LINGUAGENS, INGLES, ESPANHOL
 
 
 class Validator:
@@ -129,10 +128,23 @@ class Validator:
                 print(questions[i])
                 return False
 
-        # for q in questions:
-        #     data_img = base64.b64decode(str(q["view"]))
-        #     img = Image.open(io.BytesIO(data_img))
-        #     img.show()
-        #     time.sleep(1)
+            view = str(questions[i]["view"])
+            img_size = self.img_size(view)
+            if img_size > 1000000:
+                print("Img size is too high")
+                print("Expected < 1000000")
+                print("Actual: " + str(img_size))
+                print("Question:")
+                print(questions[i])
+                return False
+
+        for question in questions:
+            view = str(question["view"])
+            data_img = base64.b64decode(view)
+            img = Image.open(io.BytesIO(data_img))
+            img.show()
 
         return True
+
+    def img_size(self, b64string):
+        return (len(b64string) * 3) / 4 - b64string.count('=', -2)

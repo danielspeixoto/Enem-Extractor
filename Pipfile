@@ -16,6 +16,8 @@ opencv-python = "*"
 imutils = "*"
 requests = "*"
 xlrd = "*"
+pymongo = "*"
+google-api-python-client = "*"
 
 [requires]
 python_version = "3.7"

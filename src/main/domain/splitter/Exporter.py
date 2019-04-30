@@ -2,10 +2,10 @@ import os
 
 from src.main.data import JSONExporter
 from src.main.data.Config import YAMLConfig
-from src.main.domain.PosProcessor import ENEMPosProcessor
-from src.main.domain.Preprocessor import ENEMPreProcessor
-from src.main.domain.Splitter import ENEMSplitter
-from src.main.domain.Validator import Validator
+from src.main.domain.splitter.PosProcessor import ENEMPosProcessor
+from src.main.domain.splitter.Preprocessor import ENEMPreProcessor
+from src.main.domain.splitter.Splitter import ENEMSplitter
+from src.main.domain.splitter.Validator import Validator
 
 
 class ENEMExporter:
@@ -35,7 +35,8 @@ class ENEMExporter:
             input_path,
             output_path,
             config.config["one_column_pages"],
-            config.config["excluded_pages"]
+            config.config["excluded_pages"],
+            config.config["year"]
         )
 
         results = []

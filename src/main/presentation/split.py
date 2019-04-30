@@ -1,18 +1,13 @@
 import os
 import shutil
-import sys
-
-import base64
-
-from PIL import Image
 
 from src.main.data.Config import YAMLConfig
 from src.main.data.JSONExporter import JSONExporter
-from src.main.domain.Exporter import ENEMExporter
-from src.main.domain.PosProcessor import ENEMPosProcessor
-from src.main.domain.Preprocessor import ENEMPreProcessor
-from src.main.domain.Splitter import ENEMSplitter
-from src.main.domain.Validator import Validator
+from src.main.domain.splitter.Exporter import ENEMExporter
+from src.main.domain.splitter.PosProcessor import ENEMPosProcessor
+from src.main.domain.splitter.Preprocessor import ENEMPreProcessor
+from src.main.domain.splitter.Splitter import ENEMSplitter
+from src.main.domain.splitter.Validator import Validator
 
 
 output = "/Volumes/Data/enem/experiments/"

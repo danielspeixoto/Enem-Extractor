@@ -49,7 +49,8 @@ def pdf2img(input_path, output_path, dpi=500):
         break
 
 
-def pdf2multiple_img(work_dir, input_path, output_path, dpi=1000):
+def pdf2multiple_img(work_dir, input_path, output_path):
+    dpi = 250
     convert_from_path(input_path, 1000, output_folder=work_dir, fmt="jpg")
 
     paths = [work_dir + "/" + f for f in listdir(work_dir)
@@ -82,8 +83,19 @@ def pdf2multiple_img(work_dir, input_path, output_path, dpi=1000):
 
     imgs_comb = np.vstack((np.asarray(i) for i in processed))
     imgs_comb = PIL.Image.fromarray(imgs_comb)
-    imgs_comb.save(work_dir + "highres.jpg")
+    highres_img = work_dir + "highres.jpg"
+    imgs_comb.save(highres_img)
 
-    Image.open(work_dir + "highres.jpg").save(output_path, dpi=(dpi, dpi))
+    img = cv2.imread(highres_img, cv2.IMREAD_UNCHANGED)
+    scale = dpi / 1000
+    width = int(img.shape[1] * scale)
+    height = int(img.shape[0] * scale)
+    dim = (width, height)
+    # resize image
+    resized = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
+    cv2.imwrite(output_path, resized)
 
-
+    # img = PythonMagick.Image()
+    # img.density("600")
+    # img.read(highres_img)
+    # img.write(output_path)

@@ -1,10 +1,9 @@
-import os
 from PyPDF2 import PdfFileReader
 import rx
 
 from src.main.aggregates.pdf_item import Portion, Question
-from src.main.domain.PDF import save_page, mod_save_page, crop
-from src.main.domain.Vision import size, pdf2img, find
+from src.main.domain.splitter.PDF import save_page, mod_save_page, crop
+from src.main.domain.splitter.Vision import pdf2img, find
 
 
 class ENEMSplitter:

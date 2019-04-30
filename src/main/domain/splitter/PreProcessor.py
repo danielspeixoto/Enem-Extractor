@@ -1,7 +1,7 @@
 import os
 from PyPDF2 import PdfFileReader, PdfFileWriter
 
-from src.main.domain.PDF import crop
+from src.main.domain.splitter.PDF import crop
 
 
 class ENEMPreProcessor:
@@ -11,7 +11,8 @@ class ENEMPreProcessor:
                input_path,
                output_path,
                one_column_pages,
-               excluded_pages):
+               excluded_pages,
+               year):
 
         left_column_pdf_path = working_dir + "left.pdf"
         right_column_pdf_path = working_dir + "right.pdf"
@@ -28,7 +29,7 @@ class ENEMPreProcessor:
         end = 585
         gap = 0
 
-        if self.year >= 2016:
+        if year >= 2016:
             top = 750
             low = 60
             start = 55

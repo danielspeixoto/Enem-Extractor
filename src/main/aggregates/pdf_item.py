@@ -2,7 +2,7 @@ import os
 
 from PyPDF2 import PdfFileMerger, PdfFileReader, PdfFileWriter
 
-from src.main.domain.PDF import mod_page
+from src.main.domain.splitter.PDF import mod_page
 
 
 class Exam:
