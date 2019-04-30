@@ -3,13 +3,6 @@ from typing import Dict, Tuple
 import pandas as pd
 import re
 
-INGLES = "inglês"
-ESPANHOL = "espanhol"
-LINGUAGENS = "linguagens"
-MATEMATICA = "matemática"
-HUMANAS = "humanas"
-NATURAIS = "naturais"
-
 class MicroData:
 
     def __init__(self, path: str, year: int):
@@ -25,41 +18,6 @@ class MicroData:
 
     def info(self, occurrence_idx: int, day: int, variant: str):
         return self.handler.info(occurrence_idx, day, variant)
-
-    def area_number(self, day: int, occurrence_idx: int):
-        num = occurrence_idx + 1
-        if day == 2:
-            num += 90
-        if self.year < 2017:
-            if day == 1:
-                if num <= 45:
-                    return HUMANAS, num
-                else:
-                    return NATURAIS, num
-            else:
-                if num <= 95:
-                    return INGLES, num
-                elif num <= 100:
-                    return ESPANHOL, num - 5
-                elif num <= 140:
-                    return LINGUAGENS, num - 5
-                else:
-                    return MATEMATICA, num - 5
-        else:
-            if day == 1:
-                if num <= 5:
-                    return INGLES, num
-                elif num <= 10:
-                    return ESPANHOL, num - 5
-                elif num <= 50:
-                    return LINGUAGENS, num - 5
-                else:
-                    return HUMANAS, num - 5
-            else:
-                if num <= 135:
-                    return NATURAIS, num
-                else:
-                    return MATEMATICA, num
 
     def list_data(self, day: int, variant: str):
         return self.handler.list_data(day, variant)
@@ -127,6 +85,9 @@ class XLSXMicroData:
         self.year = year
         self.path = path
         self.areas = ["CHT", "CNT", "LCT", "MTT"]
+        self.df = {}
+        for area in self.areas:
+            self.df[area] = pd.read_excel(path, sheet_name=area)
         self.separator_regex = re.compile("[_ ]")
 
     def variants(self, item_code: str)-> [Tuple[str, int]]:
@@ -134,7 +95,7 @@ class XLSXMicroData:
         results = []
         item_code = int(item_code)
         for area in self.areas:
-            df = pd.read_excel(self.path, sheet_name=area)
+            df = self.df[area]
             column_names = list(df.columns.values)
             aux = df.loc[df[column_names[3]] == item_code]
             count = aux.shape[0]
@@ -154,17 +115,15 @@ class XLSXMicroData:
         domain = question_area(self.year, day, num) + "T"
 
         idx = occurrence_idx % get_mod(self.year, day)
-        if idx == 50:
-            print(idx)
 
-        df = pd.read_excel(self.path, sheet_name=domain)
-        variant = self.get_variant(df, variant)
+        df = self.df[domain]
+        variant = self.get_offset(df, variant)
 
         ref = df.iloc[idx, variant + 1]
         ans = ord(df.iloc[idx, variant + 2]) - ord('A')
         return ref, ans
 
-    def get_variant(self, df: pd.DataFrame, name: str):
+    def get_offset(self, df: pd.DataFrame, name: str):
         maximum = 4
         column_names = list(df.columns.values)
         initial_columns_count = 0
@@ -187,16 +146,16 @@ class XLSXMicroData:
             areas = ["LCT", "MTT"]
             amount = 95
         mod = get_mod(self.year, day)
-        variant = self.get_variant(variant)
         item_codes = []
         answers = []
         for area in areas:
-            aux = pd.read_excel(self.path, sheet_name=area)
+            aux = self.df[area]
+            offset = self.get_offset(aux, variant)
             for i in range(mod):
                 if len(item_codes) == amount:
                     break
-                item_codes.append(aux.iloc[i, variant + 1])
-                answers.append(aux.iloc[i, variant + 2])
+                item_codes.append(aux.iloc[i, offset + 1])
+                answers.append(ord(aux.iloc[i, offset + 2]) - ord('A'))
         return item_codes, answers
 
 def get_areas(year, day):

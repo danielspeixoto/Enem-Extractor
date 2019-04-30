@@ -1,0 +1,16 @@
+year: 2013
+input: /Volumes/Data/enem/20131rosa.pdf
+micro_data: /Volumes/Data/enem/microdados/Microdados_Enem_2013/PLANILHAS/ITENS_ENEM_2013.xlsx
+one_column_pages:
+  - 6
+  - 7
+  - 15
+  - 20
+  - 28
+  - 29
+  - 30
+excluded_pages:
+  - 0
+  - 31
+day: 1
+variant: ROSA

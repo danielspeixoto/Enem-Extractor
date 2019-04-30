@@ -1,0 +1,11 @@
+year: 2014
+input: /Volumes/Data/enem/20142azul.pdf
+micro_data: /Volumes/Data/enem/microdados/microdados_enem2014/PLANILHAS/ITENS_ENEM_2014.xlsx
+one_column_pages:
+  - 3
+excluded_pages:
+  - 0
+  - 1
+  - 31
+day: 2
+variant: AZUL

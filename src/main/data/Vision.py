@@ -81,7 +81,7 @@ def pdf2multiple_img(work_dir, input_path, output_path):
         RGBna[green] = [255, 255, 255]
         processed.append(PIL.Image.fromarray(RGBna))
 
-    imgs_comb = np.vstack((np.asarray(i) for i in processed))
+    imgs_comb = np.vstack((np.asarray(i)for i in processed))
     imgs_comb = PIL.Image.fromarray(imgs_comb)
     highres_img = work_dir + "highres.jpg"
     imgs_comb.save(highres_img)

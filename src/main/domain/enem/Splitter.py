@@ -2,14 +2,15 @@ from PyPDF2 import PdfFileReader
 import rx
 
 from src.main.aggregates.pdf_item import Portion, Question
-from src.main.domain.splitter.PDF import save_page, mod_save_page, crop
-from src.main.domain.splitter.Vision import pdf2img, find
+from src.main.data.PDF import save_page, mod_save_page, crop
+from src.main.data.Vision import pdf2img, find
 
+rootPath = "/Users/danielspeixoto/IdeaProjects/enem-parser"
 
 class ENEMSplitter:
 
-    def __init__(self, pattern_path: str):
-        self.pattern_path = pattern_path
+    def __init__(self):
+        self.pattern_path = rootPath + "/src/res/question_pattern_enem2016.jpg"
 
     def split(self, working_dir: str, pdf_input_path)-> rx.Observable:
         def observe(observer, scheduler):
