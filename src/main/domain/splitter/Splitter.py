@@ -72,7 +72,7 @@ class ENEMSplitter:
                     # questions.append(question)
                     # Another question start is where a separator is found
                     # minus the separator height
-                    pdf_portion.upper = upper[0], upper[1] - 15
+                    pdf_portion.upper = upper[0], upper[1] - 10
 
                     page_lower, page_upper = self.get_dimensions(current_pdf_path)
                     pdf_portion.lower = page_lower

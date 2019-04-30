@@ -3,7 +3,7 @@ import os
 from src.main.data import JSONExporter
 from src.main.data.Config import YAMLConfig
 from src.main.domain.splitter.PosProcessor import ENEMPosProcessor
-from src.main.domain.splitter.Preprocessor import ENEMPreProcessor
+from src.main.domain.splitter.PreProcessor import ENEMPreProcessor
 from src.main.domain.splitter.Splitter import ENEMSplitter
 from src.main.domain.splitter.Validator import Validator
 

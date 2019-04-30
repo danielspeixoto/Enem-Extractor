@@ -29,12 +29,13 @@ class ENEMPreProcessor:
         end = 585
         gap = 0
 
-        if year >= 2016:
+        if year >= 2015:
             top = 750
-            low = 60
+            low = 55
             start = 55
             middle = 310
             end = 570
+            gap = 5
 
         crop(input_path,
              left_column_pdf_path,

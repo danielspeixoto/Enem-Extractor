@@ -5,7 +5,7 @@ from src.main.data.Config import YAMLConfig
 from src.main.data.JSONExporter import JSONExporter
 from src.main.domain.splitter.Exporter import ENEMExporter
 from src.main.domain.splitter.PosProcessor import ENEMPosProcessor
-from src.main.domain.splitter.Preprocessor import ENEMPreProcessor
+from src.main.domain.splitter.PreProcessor import ENEMPreProcessor
 from src.main.domain.splitter.Splitter import ENEMSplitter
 from src.main.domain.splitter.Validator import Validator
 
@@ -25,7 +25,7 @@ os.mkdir(exporter_dir)
 rootPath = "/Users/danielspeixoto/IdeaProjects/enem-parser"
 print(rootPath)
 
-config = YAMLConfig(rootPath + "/exams/14-1-azul.yaml")
+config = YAMLConfig(rootPath + "/exams/15-2-azul.yaml")
 input_path = config.config["input"]
 
 json = output + "/json/" + \

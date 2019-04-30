@@ -1,6 +1,7 @@
 class Question:
 
     def __init__(self,
+                 identifier: str,
                  source: str,
                  variant: str,
                  edition: int,
@@ -9,7 +10,7 @@ class Question:
                  domain: str,
                  stage: int
                  ):
-
+        self.id = identifier
         self.source = source
         self.variant = variant
         self.edition = edition

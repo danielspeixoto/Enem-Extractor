@@ -15,7 +15,7 @@ def find(query, universe):
     template = cv2.imread(query)
     x = y = None
     bigger = (0, 0)
-    threshold = 0.8
+    threshold = 0.7
     found = False
     for scale in [0.8, 0.9, 1]:
         resized = imutils.resize(image, width=int(image.shape[1] * scale))

@@ -5,6 +5,7 @@ import base64
 import pandas as pd
 from PIL import Image
 
+from src.main.data.MicroData import MicroData
 from src.main.domain.splitter.PosProcessor import NATURAIS, HUMANAS, MATEMATICA, LINGUAGENS, INGLES, ESPANHOL
 
 
@@ -14,12 +15,12 @@ class Validator:
                  year: int,
                  day: int,
                  variant: str,
-                 micro_data_path: str
+                 micro: MicroData
                  ):
         self.year = year
         self.day = day
         self.variant = variant
-        self.microdata_path = micro_data_path
+        self.micro = micro
 
     def validate(self, questions):
         adt = (self.day - 1) * 90
@@ -51,7 +52,7 @@ class Validator:
                 areas = ["CN"] * 45 + ["MT"] * 45
                 positions = list(range(1, 46)) + list(range(1, 46))
 
-        item_codes: [int] = []
+        item_codes, answers = self.micro.list_data(self.day, self.variant)
         answers: [int] = []
         fmt = self.microdata_path.split(".")[1]
         if fmt == "csv":
