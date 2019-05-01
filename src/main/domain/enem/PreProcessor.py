@@ -30,8 +30,8 @@ class ENEMPreProcessor:
         # gap = 5
         #
         # if year >= 2015:
-        top = 755
-        low = 55
+        top = 752
+        low = 57
         start = 55
         middle = 310
         end = 570

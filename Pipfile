@@ -20,6 +20,7 @@ pymongo = "*"
 google-api-python-client = "*"
 flask = "*"
 flask-cors = "*"
+termcolor = "*"
 
 [requires]
 python_version = "3.7"

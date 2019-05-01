@@ -13,10 +13,7 @@ class JSONExporter:
         self.amount_exported = 0
 
     def save(self, question):
-        out = self.storage_path + str(question["edition"]) + \
-              "/" + str(question["stage"]) + \
-              "/" + str(question["variant"]) + "/"
-        with io.open(out + str(self.amount_exported + 1) + ".json",
+        with io.open(self.storage_path + "/" + str(self.amount_exported + 1) + ".json",
                      "w", encoding='utf8') as fp:
             self.amount_exported += 1
             json.dump(question, fp, ensure_ascii=False)

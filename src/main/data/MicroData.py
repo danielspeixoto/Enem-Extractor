@@ -30,6 +30,9 @@ class ENEMInfo:
     def add(self, year: int, path: str):
         self.micro_data[year] = MicroData(path, year)
 
+    def available_years(self)-> [int]:
+        return [int(k) for k in list(self.micro_data.keys())]
+
     def variants(self, year: int, item_code: str)-> [Tuple[str, int]]:
         if self.contains(year):
             return self.micro_data[year].variants(item_code)

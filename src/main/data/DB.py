@@ -17,12 +17,20 @@ class DB:
         self.questions_collection = client.get_database(db_name).get_collection(questions_collection)
         self.videos_collection = client.get_database(db_name).get_collection(videos_collection)
 
-    def has_not_searched_videos(self):
-        cursor = self.questions_collection.find({
-            "hasSearchedForVideos": {
-                "$ne": True
-            }
-        })
+    def has_not_searched_videos(self, year: int = -1):
+        if year != -1:
+            cursor = self.questions_collection.find({
+                "hasSearchedForVideos": {
+                    "$ne": True
+                },
+                "year": year
+            })
+        else:
+            cursor = self.questions_collection.find({
+                "hasSearchedForVideos": {
+                    "$ne": True
+                }
+            })
         for doc in cursor:
             yield Question(
                 str(doc["_id"]),
@@ -66,3 +74,10 @@ class DB:
                 "questionId": ObjectId(video.questionId)
             })
         self.videos_collection.insert_many(docs)
+
+    def has_exam(self, year: int, day: int):
+        count = self.questions_collection.count({
+            "edition": year,
+            "stage": day
+        })
+        return count > 0

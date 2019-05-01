@@ -1,13 +1,13 @@
 year: 2013
-input: /Volumes/Data/enem/20132rosa.pdf
+input: /Volumes/Data/enem/20132cinza.pdf
 micro_data: /Volumes/Data/enem/microdados/Microdados_Enem_2013/PLANILHAS/ITENS_ENEM_2013.xlsx
 one_column_pages:
-  - 2
+  - 3
   - 5
-  - 24
+  - 20
 excluded_pages:
   - 0
   - 1
   - 31
 day: 2
-variant: ROSA
+variant: CINZA

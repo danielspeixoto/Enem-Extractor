@@ -1,6 +1,9 @@
 import os
+from typing import Dict
 
-from src.main.data import JSONExporter
+from rx import Observable
+
+from main.data.MicroData import MicroData
 from src.main.data.Config import YAMLConfig
 from src.main.domain.enem.PosProcessor import ENEMPosProcessor
 from src.main.domain.enem.PreProcessor import ENEMPreProcessor
@@ -12,7 +15,10 @@ class ENEMHandler:
 
     def __init__(self,
                  config: YAMLConfig,
+                 working_dir: str,
                  ):
+        self.working_dir = working_dir
+        self.temp_path = working_dir + "/temp.pdf"
         self.config = config.config
         micro = MicroData(
             config.config["micro_data"],
@@ -35,24 +41,34 @@ class ENEMHandler:
         self.splitter = ENEMSplitter()
         self.amount_exported = 0
 
-    def pre_process(self, output_path, working_dir):
+        self.pos_dir = self.working_dir + "/posprocessor/"
+        os.mkdir(self.pos_dir)
+
+    def pre_process(self):
+        pre_dir = self.working_dir + "/preprocessor/"
+        os.mkdir(pre_dir)
         self.preprocessor.linear(
-            working_dir,
+            pre_dir,
             self.config["input"],
-            output_path,
-            config.config["one_column_pages"],
-            config.config["excluded_pages"],
-            config.config["year"]
+            self.temp_path,
+            self.config["one_column_pages"],
+            self.config["excluded_pages"],
+            self.config["year"]
         )
 
-    def split(self, input_path, working_dir)-> Observable:
+    def split(self)-> Observable:
+        split_dir = self.working_dir + "/splitter/"
+        os.mkdir(split_dir)
         return self.splitter.split(
-            working_dir,
-            input_path
+            split_dir,
+            self.temp_path
         )
 
-    def pos_process(self, question, working_dir)-> Dict:
-        meta = self.posprocessor.pos_process(output_path, question, working_dir)
+    def pos_process(self, question)-> Dict:
+        self.amount_exported += 1
+        path = self.pos_dir + "/" + str(self.amount_exported)
+        os.mkdir(path)
+        meta = self.posprocessor.pos_process(self.temp_path, question, path)
         return meta
 
     def validate(self, questions)-> bool:
