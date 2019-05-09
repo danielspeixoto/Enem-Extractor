@@ -1,6 +1,8 @@
 import os
 import shutil
 
+from termcolor import colored
+
 from src.main.data.Config import YAMLConfig
 from src.main.data.JSONExporter import JSONExporter
 from src.main.domain.enem.Handler import ENEMHandler
@@ -14,12 +16,20 @@ rootPath = "/Users/danielspeixoto/IdeaProjects/enem-parser/"
 output = "/Volumes/Data/enem/experiments/"
 exams = rootPath + "/exams/"
 configs = [f for f in listdir(exams) if isfile(join(exams, f))]
+configs.sort()
 
-print("Available configs")
+conf_text = colored(" Available configs\n", "blue", attrs=["reverse"])
+print(conf_text)
 for i in range(len(configs)):
-    print(str(i) + ": " + configs[i])
+    s = configs[i].split("-")
+    gap = ""
+    if i < 10:
+        gap = " "
+    print(str(i) + ": " + gap + "ENEM 20" + s[0] + " dia " + s[1] + " variante " + s[2][:-5].upper())
 
-opt_idx = input("Choose an option")
+print()
+option_req = colored(" Choose an option:\n", "cyan", attrs=["reverse"])
+opt_idx = input(option_req)
 config = YAMLConfig(exams + configs[int(opt_idx)])
 
 folder_id = str(calendar.timegm(time.gmtime())) + \

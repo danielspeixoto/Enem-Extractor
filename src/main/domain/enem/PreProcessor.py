@@ -37,6 +37,14 @@ class ENEMPreProcessor:
         end = 570
         gap = 5
 
+        if year == 2010:
+            top = 750
+            low = 65
+            start = 40
+            middle = 300
+            end = 560
+            gap = 5
+
         crop(input_path,
              left_column_pdf_path,
              (start, low), (middle, top),

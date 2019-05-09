@@ -4,7 +4,7 @@ from src.main.data.Youtube import Youtube
 from src.main.domain.RelatedVideos import RelatedVideos
 
 db = DB(
-    "mongodb://server:YddR97RESWA5KwN@ds047448.mlab.com:47448/heroku_wn1s1nxv",
+    "mongodb+srv://enemparser:IqTqmHxP4tHyCYxK@cluster0-lf760.mongodb.net/test?retryWrites=true",
     "heroku_wn1s1nxv",
     "questions",
     "relatedVideos"
@@ -21,8 +21,9 @@ youtube = Youtube(
 
 info = ENEMInfo()
 # info.add(2014, "/Volumes/Data/enem/microdados/microdados_enem2014/PLANILHAS/ITENS_ENEM_2014.xlsx")
-info.add(2015, "/Volumes/Data/enem/microdados/microdados_enem2015/PLANILHAS/ITENS_ENEM_2015.xlsx")
+# info.add(2013, "/Volumes/Data/enem/microdados/Microdados_Enem_2013/PLANILHAS/ITENS_ENEM_2013.xlsx")
+info.add(2012, "/Volumes/Data/enem/microdados/microdados_enem2012/DADOS/ITENS_ENEM_2012.csv")
+# info.add(2015, "/Volumes/Data/enem/microdados/microdados_enem2015/PLANILHAS/ITENS_ENEM_2015.xlsx")
 
 op = RelatedVideos(db, youtube, info)
-
 op.get()

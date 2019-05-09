@@ -8,7 +8,8 @@ class Question:
                  number: int,
                  item_code: str,
                  domain: str,
-                 stage: int
+                 stage: int,
+                 view: str
                  ):
         self.id = identifier
         self.source = source
@@ -18,3 +19,4 @@ class Question:
         self.item_code = item_code
         self.domain = domain
         self.stage = stage
+        self.view = view

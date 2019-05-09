@@ -1,0 +1,13 @@
+year: 2010
+input: /Volumes/Data/enem/20102azul.pdf
+micro_data: /Volumes/Data/enem/microdados/Microdados ENEM 2010/DADOS/ITENS_PROVA_2010.csv
+one_column_pages:
+  - 3
+  - 14
+  - 18
+excluded_pages:
+  - 0
+  - 1
+  - 31
+day: 2
+variant: AZUL

@@ -45,14 +45,38 @@ class CSVMicroData:
 
     def __init__(self, path: str, year: int):
         self.year = year
-        self.df = pd.read_csv(path, sep=";")
+        sep = ";"
+        if year == 2012:
+            sep = ","
+        self.df = pd.read_csv(path, sep=sep)
+        self.separator_regex = re.compile("[_ ]")
+        self.columns = list(self.df.columns.values)
+        for c in range(len(self.columns)):
+            n = self.columns[c].lower()
+            if "cor" in n:
+                self.color_col = c
+            elif "item" in n:
+                self.item_col = c
+            elif "posicao" in n:
+                self.position_col = c
+            elif "area" in n:
+                self.area_col = c
+            elif "gabarito" in n:
+                self.answer_col = c
 
     def variants(self, item_code: str)-> [Tuple[str, int]]:
         maximum = 4
-        aux = self.df.loc[self.df["CO_ITEM"] == item_code]
+        aux = self.df.loc[self.df[self.columns[self.item_col]] == int(item_code)]
         results = []
         for i in range(maximum):
-            results.append((aux.iloc[i, "TX_COR"], aux.iloc[i, "CO_POSICAO"]))
+            number = aux.iloc[i, self.position_col]
+            if isinstance(number, str) and ("i" in number or "e" in number):
+                number = number[:-1]
+            results.append((aux.iloc[i, self.color_col],
+                           numas(self.year,
+                                 aux.iloc[i, self.area_col],
+                                 int(number)
+                                 )))
         return results
 
     def info(self, occurrence_idx: int, day: int, variant: str):
@@ -61,15 +85,18 @@ class CSVMicroData:
 
         idx = occurrence_idx % get_mod(self.year, day)
 
-        aux = self.df.loc[self.df['TX_COR'] == variant]
-        aux = aux.loc[domain in aux['SG_AREA']]
-        ref = aux.iloc[idx, 2]
-        ans = aux.iloc[idx, 3]
+        prep_var = variant.lower()[:-1]
+        aux = self.df[self.df.apply(lambda x: prep_var in x[self.columns[self.color_col]].lower(), axis=1)]
+        aux = aux[aux.apply(lambda x: domain in x[self.columns[self.area_col]], axis=1)]
+        aux = aux.reset_index(drop=True)
+        ref = aux.iloc[idx, self.item_col]
+        ans = aux.iloc[idx, self.answer_col]
         ans = ord(ans[0]) - ord('A')
         return ref, ans
 
     def list_data(self, day: int, variant: str):
-        aux = self.df.loc[self.df['TX_COR'] == variant]
+        prep_var = variant.lower()[:-1]
+        aux = self.df[self.df.apply(lambda x: prep_var in x[self.columns[self.color_col]].lower(), axis=1)]
         mod = get_mod(self.year, day)
         areas = get_areas(self.year, day)
 
@@ -77,9 +104,10 @@ class CSVMicroData:
         answers = []
         for i in range(get_amount_questions(self.year, day)):
             idx = i % mod
-            aux = aux.loc[aux['SG_AREA'] == areas[i]]
-            item_codes.append(aux.iloc[idx, 2])
-            answers.append(ord(aux.iloc[idx, 3][0]) - ord('A'))
+            curr = aux[aux.apply(lambda x: areas[i] in x[self.columns[self.area_col]], axis=1)]
+            curr = curr.reset_index(drop=True)
+            item_codes.append(curr.iloc[idx, self.item_col])
+            answers.append(ord(curr.iloc[idx, self.answer_col][0]) - ord('A'))
         return item_codes, answers
 
 class XLSXMicroData:
@@ -88,10 +116,11 @@ class XLSXMicroData:
         self.year = year
         self.path = path
         self.areas = ["CHT", "CNT", "LCT", "MTT"]
+        self.colors = ["azul", "amarelo", "branco", "rosa", "cinza"]
         self.df = {}
         for area in self.areas:
             self.df[area] = pd.read_excel(path, sheet_name=area)
-        self.separator_regex = re.compile("[_ ]")
+        self.separator_regex = re.compile("[_ .]")
 
     def variants(self, item_code: str)-> [Tuple[str, int]]:
         maximum = 4
@@ -99,17 +128,23 @@ class XLSXMicroData:
         item_code = int(item_code)
         for area in self.areas:
             df = self.df[area]
+            offset = self.get_offset(df, "azul")
             column_names = list(df.columns.values)
-            aux = df.loc[df[column_names[3]] == item_code]
+            aux = df.loc[df[column_names[offset + 1]] == item_code]
             count = aux.shape[0]
+
             if count > 0:
-                for i in range(maximum):
-                    offset = 3 + (i * 4)
-                    number = df.index[df[column_names[offset + 1]] == item_code].tolist()[0] + 1
-                    variant = column_names[offset]
-                    variant = self.separator_regex.split(variant)
-                    variant = variant[1].upper()
-                    results.append((variant, number))
+                for color in self.colors:
+                    offset = self.get_item_code_col(df, color)
+                    if offset == -1:
+                        continue
+                    aux = df.loc[df[column_names[offset]] == item_code]
+                    number = aux.iloc[0, self.get_first_order(aux)]
+                    if isinstance(number, str) and ("i" in number or "e" in number):
+                        number = number[:-1]
+                    m = int(number)
+
+                    results.append((color, int(number)))
                 break
         return results
 
@@ -126,6 +161,22 @@ class XLSXMicroData:
         ans = ord(df.iloc[idx, variant + 2]) - ord('A')
         return ref, ans
 
+    def get_item_code_col(self, df: pd.DataFrame, name: str):
+        column_names = list(df.columns.values)
+        for c in range(len(column_names)):
+            n = column_names[c].lower()
+            if "cod" in n and name[:-1].lower() in n:
+                return c
+        return -1
+
+    def get_first_order(self, df: pd.DataFrame):
+        column_names = list(df.columns.values)
+        for c in range(len(column_names)):
+            n = column_names[c].lower()
+            if "ordem" in n:
+                return c
+        return -1
+
     def get_offset(self, df: pd.DataFrame, name: str):
         maximum = 4
         column_names = list(df.columns.values)
@@ -141,6 +192,7 @@ class XLSXMicroData:
             variant = variant[1].lower()
             if name[:-1].lower() in variant:
                 return offset
+        return -1
 
     def list_data(self, day: int, variant: str):
         areas = ["CHT", "CNT"]
@@ -206,3 +258,23 @@ def question_area(year: int, day: int, num: int):
             else:
                 domain = "CN"
     return domain
+
+def numas(year: int, domain: str, num: int):
+    if year >= 2017:
+        if "LC".lower() in domain.lower():
+            return num
+        elif "CH".lower() in domain.lower():
+            return num + 45
+        elif "CN".lower() in domain.lower():
+            return num + 90
+        else:
+            return num + 135
+    else:
+        if "CH".lower() in domain.lower():
+            return num
+        elif "CN".lower() in domain.lower():
+            return num + 45
+        elif "LC".lower() in domain.lower():
+            return num + 90
+        else:
+            return num + 135

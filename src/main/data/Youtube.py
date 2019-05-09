@@ -1,4 +1,5 @@
 import os
+import re
 
 from src.main.aggregates.Question import Question
 import googleapiclient.discovery
@@ -21,6 +22,7 @@ class Youtube:
         self.ALL_COLORS = ["azul", "amarel", "rosa", "cinza", "branc"]
 
     def youtube(self):
+        self.last_used += 1
         return self.youtubes[self.last_used % len(self.youtubes)]
 
     def related(self,
@@ -43,8 +45,15 @@ class Youtube:
         must_have = [
             source.lower(),
             str(edition).lower(),
-            variant.lower(),
+            variant.lower()[:-1],
         ]
+        domain = domain.lower()
+        if domain == "inglês" or domain == "espanhol":
+            # Lingua (ingles)a, lingua (espanhol)a
+            if domain == "inglês":
+                domain = "ingles"
+            must_have.append(domain)
+        divider = re.compile("[\- .|qQ)(]([.]?)([0]?)" + str(number) + "[\- .|)(]")
         accepted_videos = []
         i = -1
         for item in response["items"]:
@@ -67,7 +76,7 @@ class Youtube:
                         break
 
             if accepted:
-                if " " + str(number) + " " not in title and " 0" + str(number) + " " not in title:
+                if re.search(divider, title) is None:
                     accepted = False
                     break
 

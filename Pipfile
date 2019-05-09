@@ -21,6 +21,7 @@ google-api-python-client = "*"
 flask = "*"
 flask-cors = "*"
 termcolor = "*"
+dnspython = "*"
 
 [requires]
 python_version = "3.7"
