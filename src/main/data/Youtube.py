@@ -42,6 +42,8 @@ class Youtube:
             q=query
         ).execute()
 
+        print("response ")
+
         must_have = [
             source.lower(),
             str(edition).lower(),
